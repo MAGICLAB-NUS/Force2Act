@@ -9,7 +9,8 @@ expert (pushing or sliding) is chosen where a sticking expert is admissible. The
 by a random factor in [e^-0.7, e^0.7] per sample, so that routing does not depend on the object's weight.
 
 A held-out report (20% of each task's episodes) is computed first; the saved model is then trained on all
-contact frames.
+contact frames. The tasks are concatenated in a fixed order (TASK_ORDER), so the result does not depend on the
+order of --configs.
 
 Ablations: --no-gates, --router-sees-direction, --one-per-case, --offset-bound 60, --lam 0.
 """
@@ -30,6 +31,9 @@ from force2act.control.contact import contact_split
 from force2act.mofe.gates import EXPERTS, physical_inputs, router_features, tool_z_axis
 from force2act.mofe.law import ExpertSelector, save_mofe
 from force2act.mofe.model import CONSTANTS, MoFE, law_text
+
+# Order in which the tasks' frames are concatenated (it sets the minibatches); other tasks follow in --configs order.
+TASK_ORDER = ("pivot_block", "push_box", "bottle_wiping", "plug_insertion_round", "plug_insertion_usb")
 
 
 # ---------------------------------------------------------------------------------------------------- data
@@ -193,7 +197,8 @@ def main() -> None:
 
     device = torch.device(args.device)
     configs = [yaml.safe_load(path.read_text()) for path in args.configs]
-    tasks = [load_task(c, args.cache_dir, args.num_workers, args.seed, not args.no_gates) for c in configs]
+    configs.sort(key=lambda c: TASK_ORDER.index(c["task"]) if c["task"] in TASK_ORDER else len(TASK_ORDER))
+    tasks =[load_task(c, args.cache_dir, args.num_workers, args.seed, not args.no_gates) for c in configs]
     names = [t["name"] for t in tasks]
     feature_dim = tasks[0]["features"].shape[1]
     history = tasks[0]["history"]
