@@ -18,6 +18,9 @@ class Action:
     Only force-controlled axes use this target. tcp_acceleration is base-frame
     linear/angular acceleration (m/s^2, rad/s^2).
     joint_torques is N m, with gravity compensation configured separately.
+    Under hybrid control, force_control_axes (6 bools) selects the axes of the
+    force frame that follow tcp_wrench, and force_frame_rotation_wxyz is that
+    frame in world coordinates; both stay in effect until an action sets them.
     """
 
     tcp_position: np.ndarray | None = None
@@ -29,6 +32,8 @@ class Action:
     tcp_velocity: np.ndarray | None = None
     tcp_wrench: np.ndarray | None = None
     tcp_acceleration: np.ndarray | None = None
+    force_control_axes: np.ndarray | None = None
+    force_frame_rotation_wxyz: np.ndarray | None = None
 
     def __post_init__(self):
         has_tcp = self.tcp_position is not None or self.tcp_quaternion_wxyz is not None
