@@ -29,7 +29,7 @@ bench = [
     "PyOpenGL>=3.1.7",
 ]
 train = [
-    "lerobot>=0.6,<0.7",
+    "lerobot[dataset]>=0.6,<0.7",
     "wandb",
 ]
 

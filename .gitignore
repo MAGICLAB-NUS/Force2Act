@@ -1,7 +1,7 @@
 __pycache__/
 *.egg-info/
-data/
-runs/
-results/
-cache/
-wandb/
+/data/
+/runs/
+/results/
+/cache/
+/wandb/
