@@ -116,7 +116,7 @@ command = agent.act(position, quaternion_wxyz, wrench_world, image)   # at 15 Hz
 
 ## Acknowledgements
 
-The Force2Act-Bench simulation builds on the Genesis contact simulator by Shuo Li. The normalizer and EMA utilities are adapted from [ManiFlow](https://github.com/geyan21/ManiFlow_Policy) (MIT).
+The normalizer and EMA utilities are adapted from [ManiFlow](https://github.com/geyan21/ManiFlow_Policy) (MIT).
 The action head follows [DiT](https://github.com/facebookresearch/DiT), the flow-time distribution follows
 [π0](https://github.com/Physical-Intelligence/openpi), and inference uses
 [real-time chunking](https://github.com/Physical-Intelligence/real-time-chunking-kinetix). Demonstrations use the
