@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Force2Act: a global force policy with a mixture of force experts for contact-rich manipulation, and Force2Act-Bench."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.12,<3.13"
 dependencies = [
     "torch>=2.7,<2.8",
     "torchvision>=0.22,<0.23",
