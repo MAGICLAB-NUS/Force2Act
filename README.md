@@ -33,9 +33,9 @@ force2act-bench --task pivot_block
 
 This downloads the trained policy and MoFE, runs the task's full protocol in parallel (`--workers`, default
 8) and writes `results/pivot_block/summary.md` and `results.jsonl`. Add `--video` to save one video per
-episode, or `--trials N` for a quick run.
+trial, or `--trials N` for a quick run.
 
-| Task | Conditions | Episodes | Force2Act |
+| Task | Conditions | Trials | Force2Act |
 |---|---|---|---|
 | `pivot_block` | block mass 0.4–0.9 kg | 6 × 25 | 93.3% |
 | `push_box` | incline 0°, 2°, 4° | 3 × 10 | 100% |

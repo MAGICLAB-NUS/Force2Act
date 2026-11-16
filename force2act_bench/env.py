@@ -1,4 +1,4 @@
-"""Force2Act-Bench environment: one task, one simulator, episodes on demand.
+"""Force2Act-Bench environment: one task, one simulator, trials on demand.
 
     env = BenchEnv("pivot_block", control="hybrid")
     obs = env.reset(env.task.conditions[0], seed=1050)
@@ -28,7 +28,7 @@ CONTROLLERS = Path(__file__).resolve().parent / "controllers"
 
 
 @dataclass
-class EpisodeResult:
+class TrialResult:
     task: str
     condition: str
     trial: int
@@ -64,7 +64,7 @@ def tilt_degrees(initial_quaternion: np.ndarray, quaternion: np.ndarray) -> floa
 
 
 def target_offset(seed: int, distance: float) -> np.ndarray:
-    """Target displacement of `distance` m in a direction drawn from the episode seed."""
+    """Target displacement of `distance` m in a direction drawn from the trial seed."""
     rng = np.random.default_rng([int(seed), 1729])
     angle = rng.uniform(0.0, 2.0 * math.pi)
     return np.array([distance * math.cos(angle), distance * math.sin(angle), 0.0])
@@ -89,9 +89,9 @@ class BenchEnv:
     def close(self) -> None:
         self.sim.close()
 
-    # ---------------------------------------------------------------------------------------------- episode
+    # ------------------------------------------------------------------------------------------------ trial
     def reset(self, condition: Condition | str, seed: int, trial: int = 1) -> dict[str, Any]:
-        """Start an episode of `condition` with `seed`; returns the first observation (rendered)."""
+        """Start a trial of `condition` with `seed`; returns the first observation (rendered)."""
         task, sim = self.task, self.sim
         if isinstance(condition, str):
             condition = next(c for c in task.conditions if c.name == condition)
@@ -129,7 +129,7 @@ class BenchEnv:
     def step(self, action: Action, images: bool = True) -> dict[str, Any]:
         """Apply `action` for one control step (1/15 s); images=False skips rendering."""
         if self.done:
-            raise RuntimeError("the episode is over: call reset()")
+            raise RuntimeError("the trial is over: call reset()")
         self.index += 1
         observation = self.sim.step(action, dt=control_dt(self.index), images=self.images and images)
         self.observation = observation
@@ -182,14 +182,14 @@ class BenchEnv:
         state["lateral"] = 1000.0 * float(insertion["lateral_error_m"])
         return depth_mm >= success["min_depth_mm"] and state["lateral"] <= success["max_lateral_mm"]
 
-    def result(self) -> EpisodeResult:
+    def result(self) -> TrialResult:
         kind, state, success = self.task.success["type"], self._state, self.task.success
         passed = self.success_time is not None and self.error is None
         if kind == "wiping":
             passed = (self.error is None and state.get("erased") is not None
                       and state["erased"] >= success["min_erased_fraction"]
                       and state["shift"] <= success["max_object_shift_mm"])
-        return EpisodeResult(
+        return TrialResult(
             task=self.task.name, condition=self.condition.name, trial=self.trial, seed=self.seed, success=passed,
             success_time_s=self.success_time if passed else None, steps=self.index + 1, error=self.error,
             max_tilt_deg=state["max_tilt"] if kind in ("object_tilt", "wiping", "push") else None,

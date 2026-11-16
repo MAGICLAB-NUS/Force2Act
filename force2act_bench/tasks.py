@@ -1,7 +1,7 @@
 """The five Force2Act-Bench tasks: scene, conditions, success test and step budget.
 
-Values are those of the paper's evaluation. Each condition is run for `trials` episodes; trial k of condition c
-uses seed = base_seed + c * trials + k - 1, so every policy sees the same episodes.
+Values are those of the paper's evaluation. Each condition is run for `trials` trials; trial k of condition c
+uses seed = base_seed + c * trials + k - 1, so every policy sees the same trials.
 """
 
 from __future__ import annotations
@@ -75,8 +75,8 @@ TASKS: dict[str, Task] = {
 }
 
 
-def episodes(task: Task, trials: int | None = None) -> list[tuple[Condition, int, int]]:
-    """(condition, trial number, seed) of every episode of the task, in order."""
-    n = trials or task.trials
+def trials(task: Task, count: int | None = None) -> list[tuple[Condition, int, int]]:
+    """(condition, trial number, seed) of every trial of the task, in order."""
+    n = count or task.trials
     return [(condition, trial, task.base_seed + index * n + trial - 1)
             for index, condition in enumerate(task.conditions) for trial in range(1, n + 1)]

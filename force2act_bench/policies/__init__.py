@@ -2,7 +2,7 @@
 
 A policy is any object with
 
-    reset(seed: int) -> None          start an episode
+    reset(seed: int) -> None          start a trial
     act(observation: dict) -> Action  one control step (15 Hz)
     needs_image() -> bool             whether the next observation must include camera frames
 

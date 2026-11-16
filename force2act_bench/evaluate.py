@@ -4,8 +4,8 @@
     force2act-bench --config configs/bench/pivot_block.yaml
     force2act-bench --task push_box --control impedance --policy my_package.policy:make_policy
 
-Episodes run in parallel worker processes (one simulator and one policy each). Results go to
-<output>/results.jsonl (one line per episode) and <output>/summary.md; --video also writes one MP4 per episode.
+Trials run in parallel worker processes (one simulator and one policy each). Results go to
+<output>/results.jsonl (one line per trial) and <output>/summary.md; --video also writes one MP4 per trial.
 """
 
 from __future__ import annotations
@@ -23,14 +23,14 @@ from typing import Any
 import numpy as np
 import yaml
 
-from force2act_bench.tasks import FREQUENCY_HZ, TASKS, episodes
+from force2act_bench.tasks import FREQUENCY_HZ, TASKS, trials
 
 DEFAULTS = {"policy": "force2act", "control": "hybrid", "workers": 8, "device": "cuda", "first_core": 0,
             "video": False, "video_every": 2}
 
 
 class VideoRecorder:
-    """One MP4 per episode from the policy camera (every `every`-th step)."""
+    """One MP4 per trial from the policy camera (every `every`-th step)."""
 
     def __init__(self, output: Path, camera: str, every: int) -> None:
         self.output, self.camera, self.every = output, camera, max(1, int(every))
@@ -66,8 +66,8 @@ class VideoRecorder:
         self.writer = None
 
 
-def run_episode(env, policy, condition, trial: int, seed: int, recorder: VideoRecorder | None) -> dict[str, Any]:
-    from force2act_bench.env import EpisodeResult
+def run_trial(env, policy, condition, trial: int, seed: int, recorder: VideoRecorder | None) -> dict[str, Any]:
+    from force2act_bench.env import TrialResult
 
     name = f"{condition.name}_trial{trial:02d}"
     if recorder is not None:
@@ -87,13 +87,13 @@ def run_episode(env, policy, condition, trial: int, seed: int, recorder: VideoRe
             if not need_image:
                 observation = {key: value for key, value in observation.items() if key != "rgb"}
         result = env.result()
-    except Exception as error:  # an episode that crashes counts as a failure
+    except Exception as error:  # a trial that crashes counts as a failure
         traceback.print_exc()
         env.error = f"{type(error).__name__}: {error}"
         try:
             result = env.result()
         except Exception:
-            result = EpisodeResult(task=env.task.name, condition=condition.name, trial=trial, seed=seed,
+            result = TrialResult(task=env.task.name, condition=condition.name, trial=trial, seed=seed,
                                    success=False, success_time_s=None, steps=0, error=env.error)
     outcome = "ERROR" if result.error else ("PASS" if result.success else "FAIL")
     if recorder is not None:
@@ -141,7 +141,7 @@ def _worker(index: int, settings: dict[str, Any], jobs: mp.Queue, messages: mp.Q
                 break
             condition_name, trial, seed = job
             condition = next(c for c in task.conditions if c.name == condition_name)
-            messages.put(("result", index, run_episode(env, policy, condition, trial, seed, recorder)))
+            messages.put(("result", index, run_trial(env, policy, condition, trial, seed, recorder)))
         env.close()
     except BaseException as error:
         messages.put(("fatal", index, f"{type(error).__name__}: {error}\n{traceback.format_exc()}"))
@@ -183,13 +183,13 @@ def main() -> None:
                         "(default: the released model of the task)")
     parser.add_argument("--mofe", help="Force2Act MoFE (default: the one named in the checkpoint config)")
     parser.add_argument("--control", help="position, impedance, hybrid (default) or a controller YAML")
-    parser.add_argument("--trials", type=int, help="episodes per condition (default: the paper protocol)")
+    parser.add_argument("--trials", type=int, help="trials per condition (default: the paper protocol)")
     parser.add_argument("--conditions", nargs="+", help="run only these conditions")
     parser.add_argument("--workers", type=int)
     parser.add_argument("--device", help="policy device (default cuda)")
     parser.add_argument("--pin-cores", action="store_true", help="one CPU core per worker, from --first-core")
     parser.add_argument("--first-core", type=int)
-    parser.add_argument("--video", action="store_true", default=None, help="write one MP4 per episode")
+    parser.add_argument("--video", action="store_true", default=None, help="write one MP4 per trial")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
 
@@ -209,10 +209,10 @@ def main() -> None:
     settings["output"] = str(output)
     os.environ.setdefault("PYOPENGL_PLATFORM", "egl")
 
-    jobs_list = [(c.name, trial, seed) for c, trial, seed in episodes(task, settings.get("trials"))
+    jobs_list = [(c.name, trial, seed) for c, trial, seed in trials(task, settings.get("trials"))
                  if not settings.get("conditions") or c.name in settings["conditions"]]
     workers = max(1, min(int(settings["workers"]), len(jobs_list)))
-    print(f"{task.name}: {len(jobs_list)} episodes, {workers} workers, control {settings['control']}, "
+    print(f"{task.name}: {len(jobs_list)} trials, {workers} workers, control {settings['control']}, "
           f"policy {settings['policy']} {settings.get('checkpoint', '')}", flush=True)
     context = mp.get_context("spawn")
     jobs, messages = context.Queue(), context.Queue()
