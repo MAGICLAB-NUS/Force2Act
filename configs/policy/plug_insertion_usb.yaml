@@ -1,0 +1,71 @@
+task: plug_insertion_usb
+instruction: Insert the USB plug into the USB socket in Genesis
+seed: 42
+data:
+  root: data/plug_insertion_usb
+  image_key: observation.images.overview
+  pose_key: observation.follower_tcp_pose_xyzrpy
+  wrench_key: observation.follower_wrench_world
+  velocity_key: observation.follower_tcp_velocity
+  tool_pose_key: observation.follower_tcp_pose_wxyz
+  fps: 15
+  obs_steps: 2
+  wrench_steps: 8
+  horizon: 16
+  val_ratio: 0.0
+policy:
+  image_encoder: vit_base_patch16_clip_224.openai
+  image_size: 224
+  frozen_image_encoder: false
+  language_model: t5-small
+  width: 768
+  depth: 12
+  heads: 12
+  mlp_ratio: 4.0
+  dropout: 0.1
+  qk_norm: true
+  force_encoder:
+    hidden_dim: 256
+    layers: 2
+    dropout: 0.1
+  relative_force_floor: 1.0
+  action_steps: 8
+  sampling_steps: 10
+train:
+  epochs: 60
+  batch_size: 128
+  lr: 0.00014
+  image_encoder_lr: 1.0e-05
+  force_encoder_lr: 0.00014
+  pose_projection_lr: 0.00014
+  weight_decay: 0.001
+  warmup_steps: 200
+  min_lr_ratio: 0.1
+  grad_clip_norm: 1.0
+  amp: true
+  num_workers: 8
+  checkpoint_every: 10
+  pose_eval_samples: 64
+inference:
+  rtc:
+    enabled: true
+    max_guidance_weight: 5.0
+    schedule: exp
+    frozen_steps: 2
+  control:
+    contact_force: 1.0
+    force_window: 3
+    contact_release_steps: 8
+    min_motion: 0.001
+    f_max: 60.0
+    handover_steps: 3
+    velocity_window: 8
+    min_speed: 0.005
+    push_angle: 15.0
+    min_step_motion: 0.0002
+    blend: 1.0
+    w: 0.8
+  hysteresis:
+    margin: 0.2
+    hold: 3
+  mofe: ../mofe

@@ -1,0 +1,6 @@
+# Cartesian impedance control: every axis tracks the commanded pose with this stiffness.
+mode: cartesian_impedance
+cartesian_stiffness: [2000, 2000, 2000, 100, 100, 100]      # N/m, Nm/rad
+cartesian_damping_ratio: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7]
+nullspace_stiffness: [20, 20, 20, 20, 20, 20, 20]
+gravity_compensation: true

@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="Wurth_61400416021_USB_A_receptacle">
+  <link name="usb_socket">
+    <visual>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_00.obj" />
+      </geometry>
+      <material name="socket_00.obj">
+        <color rgba="0.12 0.13 0.15 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_01.obj" />
+      </geometry>
+      <material name="socket_01.obj">
+        <color rgba="0.85 0.68 0.25 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_02.obj" />
+      </geometry>
+      <material name="socket_02.obj">
+        <color rgba="0.85 0.68 0.25 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_03.obj" />
+      </geometry>
+      <material name="socket_03.obj">
+        <color rgba="0.85 0.68 0.25 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_04.obj" />
+      </geometry>
+      <material name="socket_04.obj">
+        <color rgba="0.85 0.68 0.25 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_05.obj" />
+      </geometry>
+      <material name="socket_05.obj">
+        <color rgba="0.72 0.74 0.77 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_00.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_01.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_02.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_03.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_04.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_05.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_06.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_07.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_08.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_09.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_10.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_11.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_12.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_13.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_14.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_15.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_16.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_17.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_18.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_shell_contact_19.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_tongue_contact_00.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_tongue_contact_01.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_tongue_contact_02.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_tongue_contact_03.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_tongue_contact_04.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_tongue_contact_05.obj" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.00048 0.002675" rpy="-1.570796327 0 0" />
+      <geometry>
+        <mesh filename="usb_a/socket_back_contact_00.obj" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

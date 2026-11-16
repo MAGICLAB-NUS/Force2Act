@@ -1,0 +1,8 @@
+urdf: ../assets/rizon4s_rod.urdf
+flange_to_tcp_position: [0.0, 0.0, 0.1225]
+flange_to_tcp_rotation:
+- [1.0, 0.0, 0.0]
+- [0.0, 1.0, 0.0]
+- [0.0, 0.0, 1.0]
+tool_friction: 0.9  # rubber tip: drags the push box by friction on its top face
+schema_version: 1

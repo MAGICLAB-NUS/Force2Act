@@ -1,0 +1,8 @@
+schema_version: 1
+urdf: ../assets/rizon4s_round_peg.urdf
+flange_to_tcp_position: [0, 0, 0.245]
+flange_to_tcp_rotation:
+- [1, 0, 0]
+- [0, 1, 0]
+- [0, 0, 1]
+tool_friction: 0.05

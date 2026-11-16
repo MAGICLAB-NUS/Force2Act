@@ -1,0 +1,79 @@
+# USB-A plug insertion.
+schema_version: 1
+task_name: plug_insertion_usb
+robot: ../robots/rizon4s_usb_a_plug.yaml
+viewer:
+  camera_pos: [0.68, 0.03, 0.17]
+  camera_lookat: [0.53773467, 0.15718372, 0.0540010125]
+  camera_up: [0.0, 0.0, 1.0]
+  camera_fov: 30
+robot_base_position: [0.0, 0.0, 0.0]
+table:
+  name: table
+  center: [0.59, 0.157, -0.025]
+  size: [0.8, 0.6, 0.05]
+  fixed: true
+  friction: 0.5
+  color: [0.58, 0.47, 0.38, 1.0]
+  contact_feedback: true
+objects:
+  - name: socket_mount
+    center: [0.53773467, 0.15718372, 0.02]
+    size: [0.06, 0.04, 0.04]
+    fixed: true
+    friction: 0.5
+    color: [0.25, 0.3, 0.35, 1.0]
+    contact_feedback: true
+  - name: usb_socket
+    urdf: ../assets/usb_a_socket.urdf
+    center: [0.53773467, 0.15718372, 0.04]
+    size: [0.0153, 0.0109, 0.0140010125]
+    fixed: true
+    friction: 0.3
+    color: [0.72, 0.74, 0.77, 1.0]
+    contact_feedback: true
+initial_state:
+  source: explicit
+  joint_positions: [1.376084804534912, -1.5889960527420044, -2.302342653274536, 1.6863548755645752, 1.494018793106079, -0.7301536202430725, -0.33375540375709534]
+  tcp_position: [0.53773467, 0.15718372, 0.0690010125]
+  tcp_quaternion_wxyz: [0.0, 0.0, 1.0, 0.0]
+  move_duration_s: 0.0
+  settle_steps: 1000
+  position_tolerance_m: 0.005
+  rotation_tolerance_rad: 0.02
+insertion:
+  target: usb_socket
+  entrance_position: [0.53773467, 0.15718372, 0.0540010125]
+  quaternion_wxyz: [0.0, 0.0, 1.0, 0.0]
+  depth: 0.0085
+  depth_tolerance: 0.0005
+  lateral_tolerance: 0.0003
+  rotation_tolerance: 0.015
+  axially_symmetric: false
+sensor_cameras:
+  overview:
+    # Wider view matching the useful scene composition shown by the operator.
+    mount: base
+    position: [0.73, -0.08, 0.23]
+    lookat: [0.53773467, 0.15718372, 0.060]
+    up: [0.0, 0.0, 1.0]
+    fov: 35
+  close_oblique:
+    mount: base
+    position: [0.68, 0.03, 0.17]
+    lookat: [0.53773467, 0.15718372, 0.0540010125]
+    up: [0.0, 0.0, 1.0]
+    fov: 30
+  close_side:
+    mount: base
+    position: [0.54, -0.08, 0.15]
+    lookat: [0.53773467, 0.15718372, 0.0540010125]
+    up: [0.0, 0.0, 1.0]
+    fov: 28
+  close_top:
+    mount: base
+    # Lowered by 12 cm so the plug and socket remain visible at close range.
+    position: [0.61, 0.12, 0.16]
+    lookat: [0.53773467, 0.15718372, 0.0540010125]
+    up: [0.0, 1.0, 0.0]
+    fov: 28

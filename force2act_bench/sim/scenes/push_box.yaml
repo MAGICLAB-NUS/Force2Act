@@ -1,0 +1,67 @@
+schema_version: 1
+task_name: push_box
+# Slide a 1 kg box along the table to the finish line by pressing on its top face: the
+# rubber-tipped rod drags it by friction (tip 0.9, box/table 0.06, Genesis takes the larger
+# coefficient of a pair). Demonstrations are flat; the benchmark tilts the table so the line
+# is uphill (incline_sweep), where the box slides back on its own and only enough normal
+# force keeps it moving.
+viewer:
+  camera_pos: [0.80, 0.0, 0.25]
+  camera_lookat: [0.57, 0.0, 0.0]
+  camera_up: [0.0, 0.0, 1.0]
+  camera_fov: 48.0
+robot: ../robots/rizon4s_rod_grip.yaml
+robot_base_position: [0.1, 0.0, 0.0]
+table:
+  name: table
+  center: [0.65, 0.0, -0.025]
+  size: [0.8, 0.6, 0.05]
+  fixed: true
+  friction: 0.06
+  color: [0.2, 0.22, 0.21, 1.0]
+  contact_feedback: true
+objects:
+- name: push_box
+  center: [0.48, 0.0, 0.025]
+  size: [0.08, 0.08, 0.05]
+  fixed: false
+  mass: 1.0
+  friction: 0.06
+  color: [0.93, 0.91, 0.9, 1.0]
+  contact_feedback: true
+# Stop just behind the box (0.5 mm gap), lower than the box: on an incline the box slides back
+# down to its start against it, never further.
+- name: start_stop
+  center: [0.4295, 0.0, 0.01]
+  size: [0.02, 0.12, 0.02]
+  fixed: true
+  friction: 0.06
+  color: [0.45, 0.47, 0.5, 1.0]
+  contact_feedback: true
+# The finish line, x = 0.68 (the box's front face starts at 0.52: a 16 cm push): drawn only,
+# flat on the table, nothing collides with it.
+- name: finish_line
+  center: [0.68, 0.0, 0.0001]
+  size: [0.006, 0.5, 0.0002]
+  fixed: true
+  collision: false
+  friction: 0.06
+  color: [0.85, 0.15, 0.12, 1.0]
+  contact_feedback: false
+initial_state:
+  source: explicit
+  # Rod tip 3 cm above the centre of the box's top face, pointing straight down: the joint
+  # angles are solved once (IK for TCP [0.48, 0, 0.08], wxyz [0, 0, 1, 0]), so a reset sets
+  # them directly with no IK move.
+  joint_positions: [0.295656979, -0.410032362, 0.003537173, 2.583550930, -0.009708202, 1.422554255, 0.308486462]
+  settle_steps: 300
+  position_tolerance_m: 0.004
+  rotation_tolerance_rad: 0.03
+sensor_cameras:
+  # From the far end of the table, facing the robot: the box near the top, the line in front.
+  external:
+    mount: base
+    position: [0.80, 0.0, 0.25]
+    lookat: [0.57, 0.0, 0.0]
+    up: [0.0, 0.0, 1.0]
+    fov: 48.0

@@ -1,0 +1,20 @@
+# 4 cm square sponge.
+# Angled handle: sponge face 8.7 cm in front of the flange axis (wrist clears the bottle).
+# Short vertical flange axis; TCP at the side-mounted sponge face.
+schema_version: 1
+urdf: ../assets/rizon4s_wiper_lowwer_small.urdf
+flange_to_tcp_position:
+- 0.0
+- -0.087
+- 0.075
+flange_to_tcp_rotation:
+- - 1.0
+  - 0.0
+  - 0.0
+- - 0.0
+  - 6.123233995736766e-17
+  - -1.0
+- - -0.0
+  - 1.0
+  - 6.123233995736766e-17
+tool_friction: 0.25

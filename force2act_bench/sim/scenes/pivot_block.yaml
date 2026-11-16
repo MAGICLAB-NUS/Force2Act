@@ -1,0 +1,54 @@
+schema_version: 1
+task_name: pivot_block
+viewer:
+  camera_pos: [0.15, -0.35, 0.35]
+  camera_lookat: [0.745, 0.045, 0.075]
+  camera_up: [0.0, 0.0, 1.0]
+  camera_fov: 48.0
+robot: ../robots/rizon4s_rod.yaml
+robot_base_position: [0.1, 0.0, 0.0]
+table:
+  name: table
+  center: [0.65, 0.05, -0.025]
+  size: [0.8, 0.6, 0.05]
+  fixed: true
+  friction: 0.4
+  color: [0.2, 0.22, 0.21, 1.0]
+  contact_feedback: true
+objects:
+- name: flip_box
+  urdf: ../assets/flip_phone_box_heavy.urdf
+  center: [0.73, 0.052, 0.025]
+  size: [0.19, 0.095, 0.05]
+  fixed: false
+  # Explicit total rigid-body mass in kg. This overrides the URDF's 0.35 kg
+  # inertial mass and scales its inertia tensor consistently.
+  mass: 0.40
+  # Density is used only when an asset has no explicit URDF inertial mass.
+  density: 46000.0
+  friction: 0.6
+  color: [0.93, 0.91, 0.9, 1.0]
+  contact_feedback: true
+- name: flip_stop
+  center: [0.875, 0.052, 0.075]
+  size: [0.1, 0.3, 0.15]
+  fixed: true
+  friction: 0.65
+  color: [0.54, 0.68, 0.31, 1.0]
+  contact_feedback: true
+initial_state:
+  source: explicit
+  joint_positions: [0.266283274, -0.317270964, -0.047603119, 2.307591200, -0.065854795, 1.219666719, 0.282249063]
+  tcp_position: [0.603847108, 0.0, 0.042907872]
+  tcp_quaternion_wxyz: [0.085291206, 0.0, 0.996356066, 0.0]
+  move_duration_s: 3.0
+  settle_steps: 300
+  position_tolerance_m: 0.008
+  rotation_tolerance_rad: 0.03
+sensor_cameras:
+  external:
+    mount: base
+    position: [0.15, -0.35, 0.35]
+    lookat: [0.745, 0.045, 0.075]
+    up: [0.0, 0.0, 1.0]
+    fov: 48.0

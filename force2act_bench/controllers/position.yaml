@@ -1,0 +1,2 @@
+# Position control: the commanded pose is solved by inverse kinematics and tracked by joint PD control.
+mode: position

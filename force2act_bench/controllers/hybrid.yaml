@@ -1,0 +1,12 @@
+# Hybrid motion-force control: the axes listed by each action (force_control_axes, in the frame
+# force_frame_rotation_wxyz) track the commanded contact wrench; the other axes track the pose with the
+# Cartesian impedance below. This is the controller of the Force2Act results.
+mode: cartesian_motion_force
+cartesian_stiffness: [2000, 2000, 2000, 100, 100, 100]      # N/m, Nm/rad
+cartesian_damping_ratio: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7]
+force_control_axes: [false, false, false, false, false, false]
+force_control_frame: base
+passive_force_control: false                               # close the loop on the measured contact wrench
+force_feedback_gain: [0.75, 0.75, 0.75, 0.5, 0.5, 0.5]
+force_axis_max_linear_velocity: [0.15, 0.15, 0.15]        # m/s, limits the motion along force axes
+max_command_wrench: [100, 100, 100, 20, 20, 20]

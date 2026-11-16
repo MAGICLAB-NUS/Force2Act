@@ -1,0 +1,8 @@
+# force2act-bench --config configs/bench/pivot_block.yaml
+task: pivot_block
+policy: force2act
+checkpoint: hf://k3rth1v5n/Force2Act-Sim/pivot_block
+control: hybrid          # position | impedance | hybrid
+workers: 8
+video: false
+output: results/pivot_block

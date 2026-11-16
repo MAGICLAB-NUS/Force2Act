@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<!-- Rizon 4s with a wiping tool: angled handle (sponge 8.7 cm in front of the flange axis, so the wrist clears
+     the water bottle) and a 4 cm square sponge on a 4.5 cm plate. -->
+<robot name="rizon4s_acp_wiper_lowwer">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.0002 -0.0007 0.0871" rpy="0 0 0" />
+      <mass value="3.788" />
+      <inertia ixx="0.0182" ixy="0.0" ixz="0.0" iyy="0.0184" iyz="0.0001" izz="0.01" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link0.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link0.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="link1">
+    <inertial>
+      <origin xyz="0.0001 0.0035 0.15" rpy="0 0 0" />
+      <mass value="3.596" />
+      <inertia ixx="0.0274" ixy="0.0" ixz="0.0" iyy="0.0273" iyz="0.0011" izz="0.0071" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link1.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link1.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint1" type="revolute">
+    <parent link="base_link" />
+    <child link="link1" />
+    <origin xyz="0 0 0.155" rpy="0 0 3.141592653589793" />
+    <axis xyz="0 0 1" />
+    <limit lower="-2.8798" upper="2.8798" effort="123" velocity="2.0944" />
+    <dynamics damping="0.1" friction="0" />
+  </joint>
+  <link name="link2">
+    <inertial>
+      <origin xyz="-0.0003 0.0361 0.0998" rpy="0 0 0" />
+      <mass value="2.69" />
+      <inertia ixx="0.023" ixy="0.0" ixz="0.0" iyy="0.0239" iyz="-0.0001" izz="0.0036" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link2.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link2.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint2" type="revolute">
+    <parent link="link1" />
+    <child link="link2" />
+    <origin xyz="0 0.03 0.21" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <limit lower="-2.3562" upper="2.3562" effort="123" velocity="2.0944" />
+    <dynamics damping="0.1" friction="0" />
+  </joint>
+  <link name="link3">
+    <inertial>
+      <origin xyz="-0.0123 -0.0012 0.1366" rpy="0 0 0" />
+      <mass value="2.354" />
+      <inertia ixx="0.0143" ixy="0.0001" ixz="-0.0015" iyy="0.0137" iyz="-0.0005" izz="0.004" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link3.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link3.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint3" type="revolute">
+    <parent link="link2" />
+    <child link="link3" />
+    <origin xyz="0 0.035 0.205" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.0543" upper="3.0543" effort="64" velocity="2.4435" />
+    <dynamics damping="0.08" friction="0" />
+  </joint>
+  <link name="link4">
+    <inertial>
+      <origin xyz="-0.0129 0.0313 0.1034" rpy="0 0 0" />
+      <mass value="2.354" />
+      <inertia ixx="0.018" ixy="0.0001" ixz="-0.0016" iyy="0.0184" iyz="-0.0012" izz="0.003" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link4.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link4.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint4" type="revolute">
+    <parent link="link3" />
+    <child link="link4" />
+    <origin xyz="-0.02 -0.03 0.19" rpy="0 0 3.141592653589793" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.9548" upper="2.7751" effort="64" velocity="2.4435" />
+    <dynamics damping="0.08" friction="0" />
+  </joint>
+  <link name="link5">
+    <inertial>
+      <origin xyz="0.0003 0.0014 0.1363" rpy="0 0 0" />
+      <mass value="2.31" />
+      <inertia ixx="0.0142" ixy="0.0" ixz="0.0" iyy="0.0135" iyz="0.0005" izz="0.0037" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link5.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link5.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint5" type="revolute">
+    <parent link="link4" />
+    <child link="link5" />
+    <origin xyz="-0.02 0.025 0.195" rpy="0 0 3.141592653589793" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.0543" upper="3.0543" effort="39" velocity="4.8869" />
+    <dynamics damping="0.05" friction="0" />
+  </joint>
+  <link name="link6">
+    <inertial>
+      <origin xyz="0.0202 0.0596 0.0724" rpy="0 0 0" />
+      <mass value="2.223" />
+      <inertia ixx="0.0085" ixy="0.0004" ixz="0.0012" iyy="0.009" iyz="0.0018" izz="0.0042" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link6.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link6.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint6" type="revolute">
+    <parent link="link5" />
+    <child link="link6" />
+    <origin xyz="0 0.03 0.19" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <limit lower="-1.4835" upper="4.6251" effort="39" velocity="4.8869" />
+    <dynamics damping="0.05" friction="0" />
+  </joint>
+  <link name="link7">
+    <inertial>
+      <origin xyz="0 0.0001 0.0544" rpy="0 0 0" />
+      <mass value="1.403" />
+      <inertia ixx="0.0032" ixy="0.0" ixz="0.0" iyy="0.0032" iyz="0.0" izz="0.0018" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rizon4s_visual_link7.obj" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rizon4s_collision_link7.stl" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint7" type="revolute">
+    <parent link="link6" />
+    <child link="link7" />
+    <origin xyz="-0.015 0.073 0.11" rpy="0 -1.5707963267948966 0" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.0543" upper="3.0543" effort="39" velocity="4.8869" />
+    <dynamics damping="0.03" friction="0" />
+  </joint>
+  <link name="flange" />
+  <joint name="link7_to_flange" type="fixed">
+    <parent link="link7" />
+    <child link="flange" />
+    <origin xyz="0 0 0.124" rpy="0 0 3.141592653589793" />
+  </joint>
+  <joint name="flange_to_tool" type="fixed">
+    <parent link="flange" />
+    <child link="tool_link" />
+    <origin xyz="0 -0.087 0.075" rpy="1.5707963267948966 0 0" />
+  </joint>
+  <link name="tool_link">
+    <inertial>
+      <origin xyz="0 -0.015 -0.0189" rpy="0 0 0" />
+      <mass value="0.1" />
+      <inertia ixx="7.39465e-05" iyy="9.06156666667e-05" izz="0.000151044166667" ixy="0" ixz="0" iyz="-1.215e-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 -0.0375 -0.057" rpy="-0.89605538 0 0" />
+      <geometry>
+        <cylinder radius="0.012" length="0.0960469" />
+      </geometry>
+      <material name="acp_2">
+        <color rgba="0.3 0.3 0.32 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.0375 -0.057" rpy="-0.89605538 0 0" />
+      <geometry>
+        <cylinder radius="0.012" length="0.0960469" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 -0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.006" />
+      </geometry>
+      <material name="acp_4">
+        <color rgba="0.85 0.84 0.78 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.015" rpy="0 0 0" />
+      <geometry>
+        <box size="0.045 0.045 0.006" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 -0.006" rpy="0 0 0" />
+      <geometry>
+        <box size="0.04 0.04 0.012" />
+      </geometry>
+      <material name="acp_6">
+        <color rgba="0.12 0.48 0.78 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.006" rpy="0 0 0" />
+      <geometry>
+        <box size="0.04 0.04 0.012" />
+      </geometry>
+    </collision>
+  </link>
+</robot>

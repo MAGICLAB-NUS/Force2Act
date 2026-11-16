@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "force2act"
+version = "1.0.0"
+description = "Force2Act: a global force policy with a mixture of force experts for contact-rich manipulation, and Force2Act-Bench."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "torch>=2.7,<2.8",
+    "torchvision>=0.22,<0.23",
+    "timm>=1.0.20,<1.1",
+    "transformers>=4.50",
+    "safetensors>=0.5",
+    "huggingface_hub>=0.30",
+    "numpy>=1.26,<2",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+bench = [
+    "genesis-world==0.3.7",
+    "opencv-python>=4.8,<4.12",
+    "imageio[ffmpeg]>=2.30",
+    "trimesh>=4",
+    "PyOpenGL>=3.1.7",
+]
+train = [
+    "lerobot>=0.6,<0.7",
+    "wandb",
+]
+
+[project.scripts]
+force2act-bench = "force2act_bench.evaluate:main"
+force2act-train = "force2act.train_policy:main"
+force2act-train-mofe = "force2act.mofe.train:main"
+
+[tool.setuptools.packages.find]
+include = ["force2act*", "force2act_bench*"]
+
+[tool.setuptools.package-data]
+force2act_bench = ["controllers/*.yaml", "sim/scenes/*.yaml", "sim/robots/*.yaml", "sim/assets/**/*"]

@@ -1,0 +1,54 @@
+# Round-peg insertion.
+schema_version: 1
+task_name: plug_insertion_round
+robot: ../robots/rizon4s_round_peg_relaxed.yaml
+viewer:
+  camera_pos: [1.05, -0.75, 0.8]
+  camera_lookat: [0.54, 0.157, 0.055]
+  camera_up: [0.0, 0.0, 1.0]
+  camera_fov: 22
+robot_base_position: [0.0, 0.0, 0.0]
+table:
+  name: table
+  center: [0.59, 0.157, -0.025]
+  size: [0.8, 0.6, 0.05]
+  fixed: true
+  friction: 0.5
+  color: [0.58, 0.47, 0.38, 1]
+  contact_feedback: true
+objects:
+- name: insertion_fixture
+  # Bore 22 mm across for the 20 mm round peg.
+  urdf: ../assets/plug_insertion_fixture_relaxed.urdf
+  center: [0.59, 0.157, 0]
+  size: [0.22, 0.22, 0.055]
+  fixed: true
+  friction: 0.05
+  color: [0.25, 0.32, 0.4, 1]
+  contact_feedback: true
+initial_state:
+  source: explicit
+  joint_positions: [-0.500434747861705, -1.6321648499538735, -1.0532209567727895, -1.7466282146322125, 1.6007650763189845, -0.5200886269179429, -1.903675331992209]
+  tcp_position: [0.54, 0.157, 0.09]
+  tcp_quaternion_wxyz: [0, 1, 0, 0]
+  move_duration_s: 0
+  settle_steps: 1000
+  position_tolerance_m: 0.005
+  rotation_tolerance_rad: 0.02
+insertion:
+  target: insertion_fixture
+  entrance_position: [0.54, 0.157, 0.055]
+  quaternion_wxyz: [0, 1, 0, 0]
+  depth: 0.044
+  depth_tolerance: 0.001
+  lateral_tolerance: 0.0003
+  rotation_tolerance: 0.01
+  axially_symmetric: true
+sensor_cameras:
+  external:
+    mount: base
+    position: [1.05, -0.75, 0.8]
+    lookat: [0.54, 0.157, 0.055]
+    up: [0.0, 0.0, 1.0]
+    # View centred on the round-hole entrance.
+    fov: 22

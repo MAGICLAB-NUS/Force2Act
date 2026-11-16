@@ -1,0 +1,25 @@
+# Bottle wiping: a short side-mounted sponge (TCP = sponge face) wipes an ink line off a free-standing
+# water bottle. The robot base is at z = +0.16 m; there is no wrist camera.
+schema_version: 1
+task_name: bottle_wiping
+robot: ../robots/rizon4s_wiper_lowwer_small.yaml
+viewer:
+  camera_pos: [0.44, 0.539, 0.508]
+  camera_lookat: [0.68, -0.011, 0.278]
+  camera_up: [0.0, 0.0, 1.0]
+  camera_fov: 45
+robot_base_position: [0.0, 0.0, 0.16]
+table: {"name": "table", "center": [0.746636235, -0.070953031, 0.162624358], "size": [0.9, 0.9, 0.05], "fixed": true, "friction": 0.08, "color": [0.66, 0.49, 0.3, 1.0], "contact_feedback": true, "euler_deg": [0, 0, 47.701572]}
+objects:
+  - {"name": "bottle", "urdf": "../assets/water_bottle/bottle.urdf", "center": [0.629056655, 0.096432162, 0.187624358], "size": [0.054, 0.054, 0.157], "euler_deg": [0.0, 0.0, 47.701572], "fixed": false, "density": 1200.0, "friction": 0.2, "color": [0.94, 0.93, 0.89, 1.0], "contact_feedback": true, "mass": 5.0}
+initial_state: {"source": "explicit", "joint_positions": [0.325600922, -0.495088577, 0.19524841, 2.339637756, -0.290471464, 1.243132949, -0.49517712], "tcp_position": [0.526896376, 0.128248471, 0.295966338], "tcp_quaternion_wxyz": [-0.419121498, 0.419121498, -0.569506075, 0.569506075], "move_duration_s": 0.0, "settle_steps": 300, "position_tolerance_m": 0.002, "rotation_tolerance_rad": 0.01}
+sensor_cameras:
+  overview:
+    mount: base
+    # Side view (+y) of the sponge on the robot-facing side of the vase.
+    position: [0.44, 0.539, 0.508]
+    lookat: [0.68, -0.011, 0.278]
+    up: [0.0, 0.0, 1.0]
+    fov: 45
+# Visual ink only; null seed = fresh marks on every reset (episode).
+visual_marks: {"target": "bottle", "geometry": "../assets/water_bottle/geometry.yaml", "sponge_link": "tool_link", "sponge_collision_index": 2, "seed": null, "mark_count": [6, 8], "height_range_m": [0.095, 0.122], "front_half_angle_deg": 12.0, "min_force": 5.0, "min_force_hold_s": 0.1, "erase_distance_m": 0.005, "erase_margin_m": 0.0, "erase_depth_m": 0.006, "line": {"length_m": 0.05, "width_m": 0.005, "centre_height_m": 0.085, "lateral_jitter_m": 0.005}}

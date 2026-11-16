@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- Phone-shaped block: 190 x 95 x 50 mm (the scene sets its mass). -->
+<robot name="flip_phone_box_heavy">
+  <link name="box">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.35"/>
+      <inertia ixx="0.000336" ixy="0" ixz="0" iyy="0.001126" iyz="0" izz="0.001316"/>
+    </inertial>
+    <visual>
+      <geometry><box size="0.190 0.095 0.050"/></geometry>
+      <material name="box_white"><color rgba="0.93 0.91 0.90 1"/></material>
+    </visual>
+    <visual>
+      <origin xyz="0.006 0 0.0256" rpy="0 0 0"/>
+      <geometry><box size="0.166 0.078 0.001"/></geometry>
+      <material name="phone_blue"><color rgba="0.16 0.36 0.72 1"/></material>
+    </visual>
+    <visual>
+      <origin xyz="-0.058 -0.022 0.0263" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.009" length="0.0015"/></geometry>
+      <material name="camera_dark"><color rgba="0.04 0.05 0.06 1"/></material>
+    </visual>
+    <visual>
+      <origin xyz="-0.058 0.022 0.0263" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.009" length="0.0015"/></geometry>
+      <material name="camera_dark_2"><color rgba="0.04 0.05 0.06 1"/></material>
+    </visual>
+    <visual>
+      <origin xyz="-0.077 0 0.0263" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.0065" length="0.0015"/></geometry>
+      <material name="camera_dark_3"><color rgba="0.04 0.05 0.06 1"/></material>
+    </visual>
+    <collision>
+      <geometry><box size="0.190 0.095 0.050"/></geometry>
+    </collision>
+  </link>
+</robot>

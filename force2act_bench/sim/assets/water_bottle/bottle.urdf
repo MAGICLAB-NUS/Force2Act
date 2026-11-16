@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- Water bottle, metres, base at z = 0. -->
+<robot name="water_bottle_445">
+  <link name="bottle">
+    <inertial>
+      <origin xyz="0 0 0.0785" rpy="0 0 0" />
+      <mass value="0.5" />
+      <inertia ixx="0.001" iyy="0.001" izz="0.0002" ixy="0" ixz="0" iyz="0" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="visual.obj" />
+      </geometry>
+      <material name="plastic">
+        <color rgba="0.94 0.93 0.89 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="collision.obj" />
+      </geometry>
+    </collision>
+  </link>
+</robot>
