@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Force2Act: A Force-Aware Visuomotor Policy for Generalizable Compliant Robot Manipulation</title>
+<meta name="description" content="Force2Act plans motion and a relative interaction force once per action chunk, and regulates the force at every control step with a Mixture of Force Experts. 94.2% on a real robot, 93.8% on Force2Act-Bench.">
+<meta property="og:title" content="Force2Act">
+<meta property="og:description" content="A force-aware visuomotor policy for generalizable compliant robot manipulation.">
+<meta property="og:image" content="assets/img/video_poster.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f1114'/%3E%3Cpath d='M10 8h13v4h-8.5v3.5H21v4h-6.5V25H10z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f1114; --ink2:#3a3f47; --mut:#6a707a; --dim:#9aa0a8; --line:#e7e9ec; --soft:#f5f6f8; --bg:#fff;
+  --acc:#2457c5; --acc-soft:#eef3fc; --ok:#1c8f5f;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --math:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.62 var(--sans);-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss03"}
+a{color:var(--acc);text-decoration:none} a:hover{text-decoration:underline}
+img,video{display:block;max-width:100%}
+.wrap{width:min(1120px,100% - 40px);margin-inline:auto}
+.narrow{max-width:760px}
+.m{font-family:var(--math);font-style:italic;font-size:1.06em;white-space:nowrap} .m sub{font-size:.68em;font-style:italic} .m .r{font-style:normal}
+.num{font-variant-numeric:tabular-nums}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.86);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+nav.on{border-color:var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:54px}
+nav .brand{font-weight:800;letter-spacing:-.02em;color:var(--ink);font-size:17px}
+nav .links{display:flex;gap:26px;font-size:14px;font-weight:500}
+nav .links a{color:var(--mut)} nav .links a:hover{color:var(--ink);text-decoration:none}
+@media(max-width:720px){nav .links{gap:14px;font-size:13px} nav .links a.opt{display:none}}
+
+/* hero */
+header{padding:0 0 10px}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+h1{font-size:clamp(60px,11vw,150px);line-height:.9;letter-spacing:-.055em;font-weight:800;margin:20px 0 0}
+h1 span{color:var(--acc)}
+.sub{font-size:clamp(21px,2.7vw,33px);line-height:1.22;letter-spacing:-.022em;font-weight:500;color:var(--ink2);margin:24px auto 0;max-width:21em}
+.hero{text-align:center;padding-top:58px}.hero .meta{justify-content:center}.hero .stats{text-align:left}
+.wide{width:min(1360px,100% - 40px)}
+.sub b{font-weight:600;color:var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:600;border:1px solid var(--ink);color:var(--ink);background:#fff;transition:.15s}
+.btn:hover{background:var(--ink);color:#fff;text-decoration:none}
+.btn.p{background:var(--ink);color:#fff} .btn.p:hover{background:var(--acc);border-color:var(--acc)}
+.anon{font-size:14px;color:var(--mut);margin-left:6px}
+
+.wall{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:3px;background:#000;height:min(calc(100svh - 54px),56.25vw);min-height:300px}
+.tile{position:relative;overflow:hidden;background:#111;cursor:pointer;min-height:0}
+.tile video{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)} .tile:hover video{transform:scale(1.035)}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.32),transparent 24%,transparent 58%,rgba(0,0,0,.66));pointer-events:none}
+.tile .chip{position:absolute;left:20px;top:18px;z-index:2;height:34px;font-size:15px;padding:0 14px 0 11px;gap:9px} .tile .chip i{width:13px;height:13px}
+.tile .cap{position:absolute;left:22px;right:22px;bottom:22px;z-index:2;color:#fff;font-size:clamp(18px,2.1vw,30px);font-weight:700;letter-spacing:-.02em;line-height:1.1;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.tile .cap small{display:block;margin-top:6px;font-weight:500;font-size:clamp(12px,1.05vw,16px);letter-spacing:0;opacity:.88}
+.tile .bar{position:absolute;left:0;right:0;bottom:0;height:6px;border-radius:0;z-index:2;background:rgba(255,255,255,.15)}
+.wallnote{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;background:#fff;color:var(--ink);font:500 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:10px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.35);pointer-events:none}
+@media(max-width:620px){.wall{height:auto;grid-template-columns:1fr 1fr}.tile{aspect-ratio:4/3}.tile .chip{left:8px;top:8px;height:24px;font-size:11px;padding:0 9px 0 7px}.tile .cap{left:10px;right:10px;bottom:12px;font-size:14px}.tile .cap small{font-size:10.5px;margin-top:3px}.wallnote{display:none}}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px} @media(max-width:700px){.cmp{grid-template-columns:1fr}}
+.cv{position:relative;border-radius:12px;overflow:hidden;background:#111;aspect-ratio:16/9}
+.cv video{width:100%;height:100%;object-fit:cover}
+.cv::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3),transparent 26%,transparent 62%,rgba(0,0,0,.62));pointer-events:none}
+.cv.ours{box-shadow:0 0 0 3px var(--acc)}
+.cv .lab{position:absolute;left:14px;top:14px;display:flex;gap:6px;flex-wrap:wrap;z-index:2}
+.cv .capb{position:absolute;left:16px;right:16px;bottom:14px;z-index:2;color:#fff;font-size:clamp(15px,1.5vw,20px);font-weight:600;letter-spacing:-.01em;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.pill.r{background:#c2362f}
+.tl{display:grid;grid-template-columns:minmax(260px,1fr) 2fr;gap:18px;align-items:center;margin-top:16px} .tl .now{margin-top:0} @media(max-width:800px){.tl{grid-template-columns:1fr}}
+.bar.big{height:22px;border-radius:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 10px 0 8px;border-radius:999px;background:rgba(255,255,255,.95);color:var(--ink);font-size:12.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.chip i{width:10px;height:10px;border-radius:3px;background:#ccc;transition:background .12s}
+.stripnote{width:min(1120px,100% - 40px);margin:12px auto 0;font-size:13.5px;color:var(--mut)}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:54px}
+.stats div{padding:26px 22px 24px 0} .stats div+div{padding-left:22px;border-left:1px solid var(--line)}
+.stats b{display:block;font-size:clamp(34px,4.4vw,54px);letter-spacing:-.04em;line-height:1;font-weight:700}
+.stats b small{font-size:.5em;font-weight:600;letter-spacing:-.01em;color:var(--mut)}
+.stats span{display:block;margin-top:10px;font-size:14px;line-height:1.4;color:var(--mut)}
+@media(max-width:820px){.stats{grid-template-columns:1fr 1fr}.stats div:nth-child(3){border-left:0;padding-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* sections */
+section{padding:92px 0 0}
+.sh{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
+.sh .n{font:500 12px/1 var(--mono);letter-spacing:.12em;color:var(--acc)} body{counter-reset:sec} .sh .n::before{counter-increment:sec;content:counter(sec,decimal-leading-zero)}
+h2{font-size:clamp(28px,3.6vw,42px);letter-spacing:-.032em;line-height:1.1;font-weight:700;margin:0}
+h3{font-size:19px;letter-spacing:-.012em;margin:0 0 6px;font-weight:650;font-weight:600}
+p{margin:0 0 1em} .lead{font-size:19px;color:var(--ink2);max-width:46em}
+.note{font-size:13.5px;line-height:1.5;color:var(--mut)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;margin-top:30px;overflow:hidden}
+.two>div{padding:26px 28px 24px} .two>div+div{border-left:1px solid var(--line)}
+.two .tag{font:500 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:12px;display:block}
+.two p{font-size:15.5px;color:var(--ink2);margin:0}
+.two .eq{margin:14px 0 0;padding-top:14px;border-top:1px dashed var(--line);font-size:18px}
+@media(max-width:760px){.two{grid-template-columns:1fr}.two>div+div{border-left:0;border-top:1px solid var(--line)}}
+
+.frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#000}
+.frame video{width:100%;aspect-ratio:16/9}
+figure{margin:34px 0 0} figure img{width:100%;height:auto} figcaption{margin-top:12px;font-size:14px;color:var(--mut);max-width:60em}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl th{font-weight:600;font-size:12.5px;color:var(--mut);text-align:right;padding:8px 10px;border-bottom:1px solid var(--ink);white-space:nowrap}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.tbl th:first-child,.tbl td:first-child{text-align:left;padding-left:0}
+.tbl tr.grp td{font:500 11.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:16px 0 6px;border-bottom:0;text-align:left}
+.tbl tr.ours td{font-weight:650;font-weight:600;border-bottom-color:var(--ink)} .tbl tr.ours td:first-child{color:var(--acc)}
+.tbl .b{font-weight:700} .tbl .u{text-decoration:underline;text-decoration-color:var(--mut);text-underline-offset:3px}
+.tbl td.c{padding:8px 8px} .cell{display:flex;align-items:center;gap:8px} .cell em{font-style:normal;width:46px;text-align:right;flex:none} .cell .tr{flex:1;min-width:34px} .cell i{display:block;height:9px;border-radius:2px;background:#b4bac2}
+.tbl tr.ours td{background:var(--acc-soft)} .tbl tr.ours td:first-child{box-shadow:-12px 0 0 var(--acc-soft)} .tbl tr.ours td:last-child{box-shadow:12px 0 0 var(--acc-soft)} .tbl tr.ours .cell i{background:var(--acc)}
+.tbl td.d{color:var(--mut);font-size:13px}
+.key{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:3px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px} @media(max-width:940px){.cards{grid-template-columns:1fr}}
+.card{border:1px solid var(--line);border-radius:14px;padding:20px 22px 18px;min-width:0} .card h4{margin:0;font-size:17px;letter-spacing:-.01em} .card p{font-size:13.5px;line-height:1.45;color:var(--mut);margin:4px 0 14px;min-height:2.9em}
+.rk{display:grid;grid-template-columns:92px 1fr 40px;gap:10px;align-items:center;font-size:14px;padding:5px 0} .rk i{display:block;height:14px;border-radius:3px;background:#b4bac2} .rk b{font-weight:500;text-align:right;font-variant-numeric:tabular-nums} .rk.o{font-weight:700} .rk.o i{background:var(--acc)} .rk.o b{font-weight:700} .rk.o span{color:var(--acc)}
+
+.card .tbl tr.ours td{box-shadow:none!important} .card .tbl td.c{padding:8px 2px} .card .cell em{width:30px} .card .cell .tr{min-width:18px} .card .tbl tr.ours td:first-child{padding-left:8px;border-radius:6px 0 0 6px} .card .tbl td:first-child{padding-left:8px}.card .tbl th:first-child{padding-left:8px}
+#mass,#inc{width:100%;height:auto;display:block;overflow:visible} #mass text,#inc text{font:500 12px var(--sans);fill:var(--mut)}
+.tbl small{color:var(--dim);font-weight:400}
+.scroll{overflow-x:auto}
+.ex td:nth-child(1){white-space:nowrap}.ex td,.ex th{text-align:left}.ex td i.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+/* explorer */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.tabs button{font:600 14.5px/1 var(--sans);height:38px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer;transition:.12s}
+.tabs button:hover{border-color:var(--ink)} .tabs button[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.tabs button small{font-weight:500;opacity:.7;margin-left:6px}
+.xp{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:22px;align-items:start}
+@media(max-width:900px){.xp{grid-template-columns:1fr}}
+.stage{position:relative;border-radius:12px;overflow:hidden;background:#111;aspect-ratio:16/9}
+.stage video{width:100%;height:100%;object-fit:cover}
+.stage .lab{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:600;background:rgba(15,17,20,.78);color:#fff}
+.pill.w{background:rgba(255,255,255,.95);color:var(--ink)} .pill.g{background:var(--ok)}
+.bar{position:relative;height:16px;border-radius:5px;overflow:hidden;background:var(--soft);cursor:pointer;touch-action:none}
+.bar i{position:absolute;top:0;bottom:0}
+.bar .ph{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);box-shadow:0 0 0 1.5px #fff;z-index:2;pointer-events:none}
+.barwrap{padding:3px 0;margin-top:12px}
+.now{display:flex;align-items:center;gap:14px;margin-top:14px;min-height:54px;padding:10px 14px;border:1px solid var(--line);border-radius:10px}
+.now .sw{width:14px;height:34px;border-radius:4px;flex:none;transition:background .12s}
+.now b{display:block;font-size:16px;line-height:1.2} .now span{font-size:13.5px;color:var(--mut)}
+.now .law{margin-left:auto;font-size:19px;text-align:right}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:12.5px;color:var(--mut)}
+.legend span{display:inline-flex;align-items:center;gap:6px;transition:color .12s} .legend span.on{color:var(--ink);font-weight:600}
+.legend i{width:10px;height:10px;border-radius:3px}
+.base{display:grid;gap:12px}
+@media(max-width:900px){.base{grid-template-columns:repeat(3,1fr)}} @media(max-width:560px){.base{grid-template-columns:1fr}}
+.bc{display:grid;grid-template-columns:46% 1fr;gap:12px;align-items:center}
+@media(max-width:900px){.bc{grid-template-columns:1fr}}
+.bc video{width:100%;aspect-ratio:528/298;object-fit:cover;border-radius:8px;background:#111}
+.bc b{font-size:15px} .bc .sc{font:500 13px var(--mono);color:var(--mut);margin-left:6px}
+.bc p{margin:2px 0 0;font-size:13.5px;line-height:1.4;color:var(--mut)}
+.basehd{font:500 11.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:2px 0 12px}
+
+/* dot matrix */
+.dm{width:100%;border-collapse:collapse;margin-top:8px}
+.dm th{font-size:13px;font-weight:600;text-align:left;padding:0 0 10px;color:var(--mut);border-bottom:1px solid var(--ink)}
+.dm th.o{color:var(--acc)}
+.dm td{padding:12px 14px 12px 0;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14.5px}
+.dm td.t{font-weight:600;white-space:nowrap} .dm td.t small{display:block;font-weight:400;color:var(--mut);font-size:13px}
+.dm .tagu{display:inline-block;font:500 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);border:1px solid currentColor;border-radius:4px;padding:3px 5px;margin-left:6px;vertical-align:1px}
+.dots{display:inline-grid;grid-template-columns:repeat(10,8px);gap:2.5px;vertical-align:middle}
+.dots i{width:8px;height:8px;border-radius:50%;background:#e3e6ea}
+.dots i.f{background:#7b828c} .o .dots i.f{background:var(--acc)}
+.dm .v{font:500 13px var(--mono);color:var(--ink2);margin-left:10px;vertical-align:middle} .dm .o .v{color:var(--ink);font-weight:600}
+.dm tr.avg td{border-bottom:0;padding-top:16px;font-weight:700;font-size:20px;letter-spacing:-.02em} .dm tr.avg td.t{font-size:14.5px;letter-spacing:0} .dm tr.avg .o{color:var(--acc)}
+@media(max-width:860px){.dots{display:none}.dm .v{margin-left:0}}
+
+/* bench */
+.bench{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:26px}
+@media(max-width:900px){.bench{grid-template-columns:repeat(2,1fr)}}
+.bench figure{margin:0} .bench img{border-radius:10px;aspect-ratio:4/3;object-fit:cover;width:100%}
+.bench b{display:block;margin-top:10px;font-size:15px} .bench span{display:block;font-size:13.5px;line-height:1.42;color:var(--mut)}
+.simv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:26px;align-items:center;margin-top:18px}
+@media(max-width:860px){.simv{grid-template-columns:1fr}}
+.simcard{border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:16px}
+.simtop{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:30px;align-items:center} @media(max-width:800px){.simtop{grid-template-columns:1fr}}
+.sprite{aspect-ratio:292/164;border-radius:10px;background:#22262b no-repeat;overflow:hidden}
+.siminfo .kicker{color:var(--mut)} .sname{display:flex;align-items:center;gap:14px;margin-top:14px} .sname i{width:16px;height:44px;border-radius:5px;flex:none;transition:background .12s} .sname b{font-size:clamp(34px,4.4vw,60px);letter-spacing:-.04em;line-height:1;font-weight:800}
+.sdesc{margin-top:12px;font-size:16px;color:var(--ink2);min-height:3.2em} .sdesc .m{margin-left:6px;font-size:1.2em}
+.sforce{margin-top:14px;padding-top:16px;border-top:1px solid var(--line);display:flex;align-items:baseline;gap:6px} .sforce b{font-size:44px;font-weight:700;letter-spacing:-.04em;line-height:1;min-width:2.4em;text-align:right} .sforce small{font-size:20px;font-weight:600;color:var(--mut)} .sforce span{margin-left:12px;font-size:13.5px;color:var(--mut)}
+.spark{width:100%;height:190px;display:block;overflow:visible}
+.sparkw{position:relative;margin-top:16px}
+.sparkw .ph{position:absolute;top:0;bottom:0;width:1px;background:var(--ink)}
+.axl{display:flex;justify-content:space-between;font:400 11.5px var(--mono);color:var(--dim);margin-top:4px}
+
+details{border-top:1px solid var(--line)} details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;padding:16px 0;font-weight:600;font-size:16px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none} summary::after{content:"+";font:400 22px/1 var(--mono);color:var(--mut)} details[open] summary::after{content:"–"}
+summary small{font-weight:400;color:var(--mut);margin-left:10px}
+details .in{padding:0 0 22px}
+
+pre{font:400 13.5px/1.6 var(--mono);background:var(--soft);border-radius:12px;padding:20px 22px;overflow-x:auto;margin:0}
+footer{margin-top:100px;border-top:1px solid var(--line);padding:26px 0 44px;font-size:13.5px;color:var(--mut)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s,transform .7s} .rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media(max-width:620px){.lead{font-size:17px}nav .links a:nth-child(2){display:none}section{padding-top:68px}}
+
+h2 em,.sub em,.fe p b{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;font-size:1.16em;letter-spacing:-.01em}
+.film{height:560vh;padding:0;position:relative;margin-top:-54px}
+.stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:#0d0e10;color:#fff}
+#fc{position:absolute;inset:0;width:100%;height:100%}
+.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,9,11,.78),rgba(8,9,11,.25) 46%,rgba(8,9,11,0) 70%),linear-gradient(0deg,rgba(8,9,11,.6),rgba(8,9,11,0) 32%)}
+.fl{position:absolute;inset:0;padding:0 clamp(22px,5vw,84px);will-change:opacity,transform}
+.ft{display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.ft .kicker,.fx .kicker{color:rgba(255,255,255,.72)}
+.ft h1{color:#fff;font-size:clamp(68px,15.5vw,250px);margin:18px 0 0 -.04em} .ft h1 span{color:var(--live,#7eb2ff);transition:color .25s}
+.ft .sub{color:rgba(255,255,255,.86);margin:22px 0 0;max-width:19em;font-size:clamp(20px,2.5vw,34px)} .ft .sub em{color:#fff}
+.hint{position:absolute;left:clamp(22px,5vw,84px);bottom:44px;font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:12px}
+.hint i{width:1px;height:38px;background:#fff;transform-origin:top;animation:hint 1.8s ease-in-out infinite} @keyframes hint{0%{transform:scaleY(0)}60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+.ftag{position:absolute;top:78px;left:clamp(22px,5vw,84px);font:500 12px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.fexp{position:absolute;left:clamp(22px,5vw,84px);bottom:74px;right:22px}
+.fname{font-size:clamp(54px,11.5vw,190px);font-weight:800;letter-spacing:-.055em;line-height:.92;margin:14px 0 0 -.04em;color:#fff;transition:color .2s}
+.fdesc{margin-top:16px;font-size:clamp(16px,1.6vw,22px);color:rgba(255,255,255,.88);display:flex;gap:22px;align-items:baseline;flex-wrap:wrap} .fdesc .m{font-size:1.25em;color:#fff}
+.fe{display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.fe .big{font-size:clamp(110px,24vw,380px);font-weight:800;letter-spacing:-.06em;line-height:.82;margin-left:-.04em} .fe .big small{font-size:.42em;opacity:.7;letter-spacing:-.03em}
+.fe p{font-size:clamp(20px,2.4vw,34px);line-height:1.25;letter-spacing:-.02em;margin:26px 0 0;max-width:22em}
+.btn.inv{background:#fff;color:var(--ink);border-color:#fff} .btn.inv:hover{background:var(--acc);border-color:var(--acc);color:#fff} .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)} .btn.ghost:hover{background:#fff;color:var(--ink)}
+.fbar{position:absolute;left:0;right:0;bottom:0} .fbar .bar{height:8px;border-radius:0;background:rgba(255,255,255,.14);pointer-events:none} .fbar .ph{width:3px;top:-6px;background:#fff;box-shadow:none}
+nav.dark{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none;border-color:transparent} nav.dark .brand,nav.dark .links a{color:#fff} nav.dark .links a{opacity:.8}
+.hv{display:grid;grid-template-columns:1.05fr 1fr 1fr 1fr;gap:14px;margin-top:30px;align-items:stretch} @media(max-width:940px){.hv{grid-template-columns:1fr}}
+.hvs{border-radius:16px;background:var(--ink);color:#fff;padding:24px 24px 22px;display:flex;flex-direction:column;justify-content:space-between;min-height:300px}
+.hvm{display:flex;align-items:flex-end;gap:12px;flex:1} .hvm b{font-size:92px;font-weight:800;letter-spacing:-.06em;line-height:.8} .hvm small{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;opacity:.7;padding-bottom:4px}
+#hvblock{display:block;background:#fff;border-radius:4px;transition:width .25s,height .25s;margin-right:6px}
+#hvr{width:100%;margin:26px 0 8px;-webkit-appearance:none;appearance:none;height:4px;border-radius:4px;background:rgba(255,255,255,.3);outline-offset:8px;cursor:grab}
+#hvr::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 8px rgba(255,255,255,.18)} #hvr::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:0;box-shadow:0 0 0 8px rgba(255,255,255,.18)}
+.hvt{display:flex;justify-content:space-between;font:400 11.5px var(--mono);opacity:.7}
+.hvc{border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;display:flex;flex-direction:column} .hvc h4{margin:0;font-size:18px;letter-spacing:-.01em} .hvc.o h4{color:var(--acc)} .hvc p{font-size:13px;line-height:1.4;color:var(--mut);margin:4px 0 0;min-height:2.8em}
+.hvn{margin-top:auto;padding-top:18px} .hvn b{font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:1} .hvn small{font-size:22px;font-weight:600;color:var(--mut);margin-left:4px}
+.hva{height:14px;margin:10px 0 20px;position:relative} .hva i{display:block;height:4px;margin-top:5px;background:#7b828c;border-radius:2px;position:relative;transition:width .35s cubic-bezier(.2,.8,.2,1);min-width:10px} .hva i::after{content:"";position:absolute;right:-2px;top:-5px;border:7px solid transparent;border-left:11px solid #7b828c;border-right:0} .o .hva i{background:var(--acc)} .o .hva i::after{border-left-color:var(--acc)}
+.hvd{display:grid;grid-template-columns:repeat(25,1fr);gap:3px} .hvd i{aspect-ratio:1;border-radius:50%;background:#e3e6ea;transition:background .2s} .hvd i.f{background:#7b828c} .o .hvd i.f{background:var(--acc)}
+.hvk{font:500 13px var(--mono);color:var(--ink2);margin-top:10px}
+
+.hero2{position:relative;height:calc(100vh - 54px);height:calc(100svh - 54px);min-height:520px;max-height:1200px;padding:0;background:#0d0e10;color:#fff;overflow:hidden}
+.hero2 video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+.hero2 .shade{opacity:1}
+.ht{position:absolute;left:clamp(22px,5vw,84px);right:22px;top:50%;transform:translateY(-54%)}
+.ht .kicker{color:rgba(255,255,255,.72)} .ht h1{color:#fff;font-size:clamp(64px,14vw,220px);margin:18px 0 0 -.04em} .ht h1 span{color:#7eb2ff}
+.ht .sub{color:rgba(255,255,255,.88);margin:22px 0 0;max-width:19em;font-size:clamp(20px,2.4vw,32px)} .ht .sub em{color:#fff} .ht .meta{margin-top:30px}
+.hx{position:absolute;left:clamp(22px,5vw,84px);right:22px;bottom:28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap} .hx small{font:500 11.5px/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+.hx .chip{height:32px;font-size:14.5px;padding:0 14px 0 11px} .hx .chip i{width:12px;height:12px}
+.two2{grid-template-columns:1fr 1fr;margin-top:30px} @media(max-width:800px){.two2{grid-template-columns:1fr}}
+.lc{width:100%;height:auto;display:block;overflow:visible} .lc text{font:500 12px var(--sans);fill:var(--mut)}
+
+.hx small{flex:1} .hdots{display:flex;gap:6px} .hdots i{width:26px;height:3px;border-radius:2px;background:rgba(255,255,255,.3);transition:background .3s} .hdots i.on{background:#fff}
+#hv{transition:opacity .35s}
+.mxh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:34px 0 10px} .mxh b{font-size:clamp(20px,2.1vw,28px);letter-spacing:-.025em} .mxh span{font-size:14.5px;color:var(--mut)} .mxh .tagu{display:inline-block;font:500 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);border:1px solid currentColor;border-radius:4px;padding:3px 5px}
+.mxr{display:grid;grid-template-columns:repeat(4,1fr);gap:8px} @media(max-width:900px){.mxr{grid-template-columns:1fr 1fr}}
+.mxr .cv{border-radius:10px} .mxr .cv .lab{left:10px;top:10px;gap:5px} .mxr .pill{height:24px;font-size:12px;padding:0 9px} .mxr .cv .capb{left:12px;right:12px;bottom:14px;font-size:clamp(13px,1.15vw,16px)}
+.mxr .cv .bar{position:absolute;left:0;right:0;bottom:0;height:6px;border-radius:0;z-index:2;background:rgba(255,255,255,.18);pointer-events:none} .mxr .cv .bar .ph{background:#fff;box-shadow:none;top:-3px;bottom:0}
+.mxr .cv .chip{position:absolute;right:10px;top:10px;z-index:2;height:24px;font-size:12px;padding:0 9px 0 7px}
+
+section>.wrap>h2{margin-bottom:24px}
+.flow>p{max-width:none;font-size:18px;line-height:1.68;color:var(--ink2)} .flow>p b{color:var(--ink);font-weight:600}
+.flow>figure{margin:30px 0 34px} .flow .cards{margin:26px 0 8px} .flow .bench{margin-top:22px} .flow>.scroll{margin:8px 0}
+#real .lead{max-width:none}
+section{padding-top:68px} .flow>figure{margin:22px 0 0} footer{margin-top:70px}
+.inc{width:100%;border-collapse:collapse;font-size:14px} .inc th{font-size:12.5px;font-weight:600;color:var(--mut);text-align:left;padding:0 0 8px} .inc td{padding:7px 0;border-top:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.inc .d5{display:inline-grid;grid-template-columns:repeat(5,7px);gap:2.5px;vertical-align:middle} .inc .d5 i{width:7px;height:7px;border-radius:50%;background:#e3e6ea} .inc .d5 i.f{background:#7b828c} .inc tr.o .d5 i.f{background:var(--acc)}
+.inc em{font:500 12.5px var(--mono);font-style:normal;color:var(--ink2);margin-left:7px} .inc tr.o td:first-child{color:var(--acc);font-weight:700} .inc tr.o em{font-weight:700;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<nav id="nav"><div class="wrap">
+  <a class="brand" href="#top">Force2Act</a>
+  <div class="links"><a href="#real">Rollouts</a><a href="#video">Video</a><a href="#abstract">Abstract</a><a href="#results">Results</a></div>
+</div></nav>
+
+<header id="top" class="hero2">
+  <video id="hv" muted playsinline autoplay preload="auto" poster="assets/img/pivot_poster.jpg" src="assets/video/pivot_f2a.mp4"></video>
+  <div class="shade"></div>
+  <div class="ht">
+    <div class="kicker">Anonymous submission · under review</div>
+    <h1>Force<span>2</span>Act</h1>
+    <p class="sub">A force-aware visuomotor policy that presses <em>as hard as the task demands</em>, not as hard as it was shown.</p>
+    <div class="meta"><a class="btn inv" href="#video">▶&nbsp; Watch the video</a><a class="btn ghost" href="#real">Force2Act vs. baselines</a></div>
+  </div>
+  <div class="hx"><span class="chip"><i id="hdot"></i><span id="htxt">Free space</span></span><small id="hcap"></small><span class="hdots" id="hdots"></span></div>
+  <div class="fbar"><div class="bar" id="fbar"></div></div>
+</header>
+
+
+<section style="padding-top:26px"><div class="wrap">
+  <div class="stats" style="margin-top:0;border-top:0">
+    <div><b class="num">94.2<small>%</small></b><span>real-robot success over four tasks<br>baselines reach at most 27.5%</span></div>
+    <div><b class="num">93.8<small>%</small></b><span>on Force2Act-Bench, 305 trials<br>strongest baseline 77.0%</span></div>
+    <div><b class="num">20<small>/20</small></b><span>pivoting a 0.418 kg block<br>after demonstrations at 0.116 kg</span></div>
+    <div><b class="num">20<small>/20</small></b><span>press-pushing a box up a 10° incline<br>after demonstrations on a flat table</span></div>
+  </div>
+</div></section>
+
+<section id="real"><div class="wrap wide">
+  <h2>Rollouts</h2>
+  <p class="lead">Every policy is trained on the same demonstrations. Each row is one task on the real robot: Force2Act on the left, then the three baselines in the same condition. The coloured line under Force2Act is the force expert it selects over the rollout.</p>
+  <div class="mx" id="mx"></div>
+  <div class="legend" id="rleg" style="margin-top:18px"></div>
+  <p class="note" style="margin-top:10px">Expert timelines are from logged Force2Act rollouts, aligned to the footage at first contact; for plug insertion, the logged rollout is aligned to the video by phase.</p>
+</div>
+</section>
+
+<section id="video"><div class="wrap">
+  <h2>Video</h2>
+  <div class="frame"><video controls preload="none" playsinline poster="assets/img/video_poster.jpg" src="assets/video/force2act_video.mp4"></video></div>
+</div></section>
+
+<section id="abstract"><div class="wrap flow">
+  <h2>Abstract</h2>
+  <p>Contact-rich manipulation requires a robot to regulate the force it applies, not only where it moves. Existing force-aware policies learn this force from demonstrations and therefore reproduce the force levels they were trained on, which fails once the interaction demands more force than any demonstration. We present Force2Act, a hybrid force–position policy built on two complementary mechanisms. A global force policy plans the motion and the interaction force once per action chunk, with force represented relative to the measured interaction, so that the planned force scales with the load. Between planning steps, a reactive compliance policy, termed Mixture of Force Experts, identifies at every control step the force expert that governs the interaction and regulates the force through it, so that the contact holds when it changes within a chunk. We further introduce Force2Act-Bench, a simulation benchmark of five contact-rich tasks that gives the community a common and repeatable way to test force-aware policies and measure how well they regulate the interaction force. Force2Act achieves an overall success rate of 93.8%, compared with 77.0% for the strongest baseline, and its reactive regulation reduces the failures on block pivoting from 30 to 10 of 150 trials. On a real robot, Force2Act reaches an average success rate of 94.2% over four tasks, against at most 27.5% for the baselines.</p>
+  <figure><img src="assets/img/overview.webp" width="2200" height="942" alt="Overview of Force2Act: global force policy, reactive compliance policy (MoFE), and hybrid controller" loading="lazy"></figure>
+</div></section>
+
+<section id="results"><div class="wrap flow">
+  <h2>Results</h2>
+  <p>On a real Flexiv Enlight L arm, Force2Act reaches an average success rate of 94.2% over four tasks, against at most 27.5% for the baselines, and is the best in every condition. Block pivoting and press-push box are also tested with a heavier block and on an incline that the demonstrations never showed. Each dot below is one trial, filled if it succeeded.</p>
+  <div class="scroll"><table class="dm" id="dm"></table></div>
+  <p class="note" style="margin-top:12px">20 trials per condition. Each policy is trained on 50 demonstrations of block pivoting and 25 of each other task. * ManiFlow succeeds on the incline only by pressing about 3.8× harder than in the demonstrations, as its position target stays below the raised top face.</p>
+
+  <p style="margin-top:2.6em">In simulation we introduce <b>Force2Act-Bench</b>, five contact-rich tasks in Genesis designed so that reproducing the demonstrated motion alone does not suffice. Every policy observes a single external RGB camera, so the contact cannot be resolved from vision and must be inferred from force.</p>
+  <div class="bench">
+    <figure><img src="assets/img/bench_pivot_block.webp" alt="" loading="lazy"><b>Block pivoting</b><span>Push a block against a wall until it stands upright. Six masses, 0.4 to 0.9 kg.</span></figure>
+    <figure><img src="assets/img/bench_push_box.webp" alt="" loading="lazy"><b>Press-push box</b><span>Push a low-friction box uphill by pressing only on its top face. Inclines of 0°, 2°, 4°.</span></figure>
+    <figure><img src="assets/img/bench_bottle_wiping.webp" alt="" loading="lazy"><b>Bottle wiping</b><span>Remove an ink line from a free-standing bottle without pushing it away.</span></figure>
+    <figure><img src="assets/img/bench_plug_insertion_round.webp" alt="" loading="lazy"><b>Round-plug insertion</b><span>Hole at the demonstrated position or displaced by 2 mm.</span></figure>
+    <figure><img src="assets/img/bench_plug_insertion_usb.webp" alt="" loading="lazy"><b>USB insertion</b><span>Insert a USB connector into a socket with a 1 mm tolerance.</span></figure>
+  </div>
+  <p style="margin-top:2em">Force2Act achieves the highest overall success rate, 93.8% against 77.0% for ACP, and keeps its success rate at every block mass and every incline, as its force follows the measured load. USB insertion, governed by lateral alignment rather than by the normal force, is the only task on which ACP and ForceVLA do better.</p>
+  <div class="cards">
+    <div class="card"><h4>Overall</h4><p>Success rate (%) over all 305 trials.</p><div id="rank"></div></div>
+    <div class="card"><h4>Heavier blocks</h4><p>Block pivoting, success (%) against block mass (kg).</p><svg id="mass" viewBox="0 0 360 300" role="img" aria-label="Block pivoting success against block mass"></svg></div>
+    <div class="card"><h4>Steeper inclines</h4><p>Press-push box, success (%) against incline. No baseline solves every incline.</p><svg id="inc" viewBox="0 0 360 300" role="img" aria-label="Press-push box success against incline"></svg></div>
+  </div>
+  <p style="margin-top:2em">Ablations show that both policies, the relative force, and each component of MoFE are needed. On block pivoting, the reactive regulation reduces the failures from 30 to 10 of 150 trials. The full tables are below.</p>
+  <div>
+    <details><summary><span>Simulation, per task<small>all seven methods on all five tasks</small></span></summary><div class="in scroll"><table class="tbl" id="simtbl"></table>
+      <p class="note" style="margin-top:12px">Number of trials under each task. Bold marks the best result in a column.</p></div></details>
+    <details><summary><span>Plan alone, MoFE alone, and both<small>policy weight <span class="m">w</span> and force representation</small></span></summary><div class="in scroll"><table class="tbl" id="ab1"></table>
+      <p class="note" style="margin-top:12px">The global policy alone is weakest where the load changes at test time, since its plan is executed open loop within a chunk. MoFE alone fails on block pivoting, since it does not plan when and where the force should rise. A policy trained on absolute force in newtons reproduces the magnitudes of its demonstrations.</p></div></details>
+    <details><summary><span>Failure modes on block pivoting<small>150 trials per method over six masses</small></span></summary><div class="in scroll"><table class="tbl" id="ab2"></table>
+      <p class="note" style="margin-top:12px">Fell back: the block drops over 20° below its highest tilt. Stalled: timeout. No tip: tilt never above 10°. Contact loss is |F| &lt; 1 N after first contact.</p></div></details>
+    <details><summary><span>Design of MoFE<small>one component removed at a time, <span class="m">w</span> = 0.8</small></span></summary><div class="in scroll"><table class="tbl" id="ab3"></table>
+      <p class="note" style="margin-top:12px">The MLP law replaces MoFE by a free slope and offset predicted at every step, trained for each task separately. Each component handles a particular kind of contact, so each variant loses different tasks.</p></div></details>
+  </div>
+  <p style="margin-top:2em">Force2Act regulates the force along a single direction, the contact normal, so tasks that require compliance in multiple directions or rotational compliance remain future work. All contacts in our tasks are rigid, so soft or deformable contacts are not considered.</p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>BibTeX</h2>
+  <pre>@misc{force2act,
+  title  = {Force2Act: A Force-Aware Visuomotor Policy for
+            Generalizable Compliant Robot Manipulation},
+  author = {Anonymous},
+  note   = {Under review},
+  year   = {2026}
+}</pre>
+</div></section>
+
+<footer><div class="wrap">Force2Act · anonymous submission, under double-blind review. All footage is of the real robot or of Force2Act-Bench; speeds are marked on each clip.</div></footer>
+
+<script src="assets/data.js"></script>
+<script>
+const EXP={top_push:['Sticking 1','#E0632F','stick'],pivot:['Sticking 2','#23A47A','stick'],side_push:['Pushing','#6B7683','push'],insert:['Insertion','#D14B85','ins'],
+  wipe_a:['Sliding 1','#D39A17','slide'],wipe_b:['Sliding 2','#7E57C2','slide'],wipe_c:['Sliding 3','#2A78D6','slide'],free:['Free space','#DDE1E6','free']};
+const CASE={stick:['presses harder as the tangential load grows','F<sub>n</sub> <span class="r">=</span> c F<sub>t</sub> <span class="r">+</span> b'],
+  slide:['slips along the surface at a prescribed level','F<sub>n</sub> <span class="r">=</span> b'],
+  push:['force along the motion, steady level','F<sub>n</sub> <span class="r">=</span> b'],
+  ins:['axial push that overcomes the sideways load','F<sub>n</sub> <span class="r">=</span> c F<sub>⊥</sub> <span class="r">+</span> b'],
+  free:['no contact: the planned pose is tracked','']};
+const ORDER=['top_push','pivot','side_push','insert','wipe_a','wipe_b','wipe_c','free'];
+const TASKS={
+ pivot:{t:'Block pivoting',c:'0.418 kg block',n:'unseen: demonstrations use a 0.116 kg block',ood:1,s:'20/20',base:[['acp','ACP','3/20','The block falls back'],['mf','ManiFlow','0/20','Keeps moving without enough force'],['fvla','ForceVLA','0/20','Stalls, the block never tips']]},
+ box:{t:'Press-push box',c:'10° incline',n:'unseen: demonstrations use a flat table',ood:1,s:'20/20',base:[['acp','ACP','1/20','The tool tilts and slides off the box'],['mf','ManiFlow','17/20*','This trial leaves the box behind'],['fvla','ForceVLA','0/20','Never presses on the top face']]},
+ pusht:{t:'Press-push T',c:'demonstrated setup',n:'press on the T and carry it across the table',ood:0,s:'20/20',base:[['acp','ACP','8/20','Gets stuck, the T does not move'],['mf','ManiFlow','3/20','Keeps moving without enough force'],['fvla','ForceVLA','0/20','Misses the contact']]},
+ plug:{t:'Plug insertion',c:'demonstrated setup',n:'search for the socket, then insert',ood:0,s:'16/20',base:[['acp','ACP','2/20','Gets stuck on the socket'],['mf','ManiFlow','0/20','Never touches the socket'],['fvla','ForceVLA','13/20','Stops on the face of the socket']],x:'Expert selected by MoFE in a logged Force2Act rollout of this task, aligned to the video by phase.'}};
+const $=s=>document.querySelector(s), el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function fillBar(bar,tl,T){bar.innerHTML='';for(const [a,b,e] of tl){const i=el('i');i.style.cssText=`left:${a/T*100}%;width:${Math.max((b-a)/T*100,.25)}%;background:${EXP[e][1]}`;i.title=EXP[e][0];bar.append(i)}const p=el('div','ph');bar.append(p);return p}
+function at(tl,t){for(const s of tl)if(t>=s[0]&&t<s[1])return s[2];return tl[tl.length-1][2]}
+function smooth(tl,t,w){const c={};for(let k=-3;k<=3;k++){const e=at(tl,Math.max(0,t+k*w/3));c[e]=(c[e]||0)+1}return Object.keys(c).sort((a,b)=>c[b]-c[a])[0]}
+function scrub(bar,fn){let d=0;const f=ev=>{const r=bar.getBoundingClientRect();fn(Math.min(.999,Math.max(0,(ev.clientX-r.left)/r.width)))};
+  bar.addEventListener('pointerdown',ev=>{d=1;bar.setPointerCapture(ev.pointerId);f(ev)});bar.addEventListener('pointermove',ev=>d&&f(ev));bar.addEventListener('pointerup',()=>d=0);bar.addEventListener('pointercancel',()=>d=0)}
+const vis=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;v._vis=e.isIntersecting;if(v.tagName==='VIDEO'){if(e.isIntersecting&&!reduce&&!v._hold)v.play().catch(()=>{});else v.pause()}}),{threshold:.2});
+
+/* hero: cycles through the four real-robot tasks */
+const hero=(()=>{const K=['pivot','box','pusht','plug'],v=$('#hv');let i=0,R,ph,cur='';v.setAttribute('muted','');vis.observe(v);
+  $('#hdots').innerHTML='<i></i>'.repeat(4);
+  const set=n=>{i=n%4;const k=K[i],T=TASKS[k];R=D.real[k];ph=fillBar($('#fbar'),R.tl,R.T);cur='';
+    $('#hcap').textContent=`${T.t} · ${T.ood?'unseen ':''}${T.c} · real robot · ${R.speed}× speed`;[...$('#hdots').children].forEach((d,j)=>d.classList.toggle('on',j===i));
+    if(v.getAttribute('src')!==`assets/video/${k}_f2a.mp4`){v.poster=`assets/img/${k}_poster.jpg`;v.src=`assets/video/${k}_f2a.mp4`}if(v._vis&&!reduce)v.play().catch(()=>{})};
+  v.addEventListener('ended',()=>{v.style.opacity=0;setTimeout(()=>{set(i+1);v.style.opacity=1},350)});set(0);
+  return ()=>{if(!v._vis)return;const t=v.currentTime;ph.style.left=Math.min(100,t/R.T*100)+'%';const e=smooth(R.tl,t,.3);if(e!==cur){cur=e;$('#hdot').style.background=EXP[e][1];$('#htxt').textContent=EXP[e][0]}}})();
+
+/* video matrix: tasks x policies */
+ORDER.forEach(e=>$('#rleg').append(el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`)));
+const rows=[];
+for(const k of Object.keys(TASKS)){const T=TASKS[k],R=D.real[k];
+  $('#mx').append(el('div','mxh',`<b>${T.t}</b>${T.ood?'<span class="tagu">unseen</span>':''}<span>${T.c}${T.ood?' · '+T.n.replace('unseen: ',''):''} · ${R.speed}× speed</span>`));
+  const row=el('div','mxr');$('#mx').append(row);
+  const mk=(f,n,sc,c,ours)=>{const d=el('div','cv'+(ours?' ours':'')),v=el('video');Object.assign(v,{muted:true,loop:true,playsInline:true,preload:'none',poster:ours?`assets/img/${k}_poster.jpg`:'',src:`assets/video/${k}_${f}.mp4`});v.setAttribute('muted','');v.setAttribute('playsinline','');
+    d.append(v,el('div','lab',`<span class="pill w">${n}</span><span class="pill ${ours?'g':'r'}">${sc}</span>`),el('div','capb',c));row.append(d);vis.observe(v);return [d,v]};
+  const [d,v]=mk('f2a','Force2Act',T.s,'Completes the task',1),chip=el('span','chip','<i></i><span>Free space</span>'),bar=el('div','bar');d.append(chip,bar);
+  rows.push({v,R,ph:fillBar(bar,R.tl,R.T),dot:chip.firstChild,txt:chip.lastChild,cur:''});
+  for(const [f,n,sc,c] of T.base)mk(f,n,sc,c,0)}
+/* real results */
+const RR=[['Block pivoting','0.116 kg block (demo)',[19,18,0,3],0],['Block pivoting','0.418 kg block',[20,3,0,0],1],['Press-push box','flat table (demo)',[18,0,14,10],0],['Press-push box','10° incline',[20,1,0,17],1],['Press-push T','demo setup',[20,8,0,3],0],['Plug insertion','demo setup',[16,2,13,0],0]];
+$('#dm').innerHTML='<tr><th>Task</th><th class="o">Force2Act</th><th>ACP</th><th>ForceVLA</th><th>ManiFlow</th></tr>'+RR.map(([t,c,v,o])=>`<tr><td class="t">${t}${o?'<span class="tagu">unseen</span>':''}<small>${c}</small></td>`+v.map((n,i)=>`<td class="${i?'':'o'}" aria-label="${n} of 20"><span class="dots">${'<i class="f"></i>'.repeat(n)+'<i></i>'.repeat(20-n)}</span><span class="v">${n}/20${o&&i===3&&n===17?'*':''}</span></td>`).join('')+'</tr>').join('')
+ +'<tr class="avg"><td class="t">Average success rate<small>120 trials per policy</small></td><td class="o">94.2%</td><td>26.7%</td><td>22.5%</td><td>27.5%</td></tr>';
+
+/* tables */
+function table(id,head,rows,opt={}){const cols=head.length-1,best=[],sec=[];
+  for(let j=0;j<cols;j++){const vs=rows.filter(r=>r.length>2).map(r=>r[j+1]).filter(x=>typeof x==='number');const s=[...new Set(vs)].sort((a,b)=>opt.low?a-b:b-a);best[j]=s[0];sec[j]=s[1]}
+  $(id).innerHTML='<tr>'+head.map(h=>`<th>${h}</th>`).join('')+(opt.delta?'<th>vs. ours</th>':'')+'</tr>'+rows.map(r=>r.length===1?`<tr class="grp"><td colspan="${cols+2}">${r[0]}</td></tr>`:
+   `<tr class="${r.ours?'ours':''}"><td>${r[0]}</td>`+r.slice(1).map((v,j)=>{const num=typeof v==='number',skip=opt.nobest&&opt.nobest.includes(j);
+     const cls=(num&&!skip&&v===best[j]?'b ':'')+(num&&!skip&&opt.second&&v===sec[j]?'u ':'');const txt=num?(opt.int?v:v.toFixed(1)):v;
+     return opt.heat&&num?`<td class="c"><span class="cell"><em class="${cls}">${txt}</em><span class="tr"><i style="width:${v}%"></i></span></span></td>`:`<td class="${cls}">${txt}</td>`}).join('')+(opt.delta?`<td class="d">${r.ours?'':(r[cols]-opt.delta>0?'+':'−')+Math.abs(r[cols]-opt.delta).toFixed(1)}</td>`:'')+'</tr>').join('')}
+const O=r=>(r.ours=1,r);
+table('#simtbl',['Method','Pivot <small>150</small>','Box <small>30</small>','Wipe <small>50</small>','Round <small>50</small>','USB <small>25</small>','Avg. <small>305</small>'],[
+ ['Without force'],['MolmoAct2',0,56.7,16,76,40,23.9],['ManiFlow',0,66.7,0,86,76,26.9],
+ ['With force'],['ForceVLA',0,33.3,4,88,96,26.2],['RDP',0,0,0,86,0,14.1],['ImplicitRDP',0,0,2,52,0,8.9],['ACP',64,50,100,100,96,77],
+ O(['Force2Act (ours)',93.3,100,98,96,76,93.8])],{heat:1});
+table('#ab1',['<span class="m">w</span>','Pivot','Box','Wipe','Round','USB','Avg.'],[
+ ['Relative force'],['0 (global only)',80,83.3,98,98,88,86.9],['0.2',82.7,96.7,100,100,88,90.2],['0.4',88,100,98,100,92,93.1],['0.6',87.3,100,100,100,84,92.5],O(['0.8 (ours)',93.3,100,98,96,76,93.8]),['0.9',90,96.7,100,98,72,92.1],['1 (MoFE only)',38,100,94,98,96,67.9],
+ ['Absolute force'],['0 (global only)',29.3,46.7,100,100,60,56.7],['0.8',78.7,83.3,100,100,92,87.2]],{heat:1,delta:93.8});
+table('#ab2',['Method','Failed trials','Fell back','Stalled','No tip','Contact loss, trials','per trial'],[
+ ['ACP',54,6,7,41,'41%','1.00'],['Global only',30,24,5,1,'59%','1.97'],['MoFE only',93,18,52,23,'67%','1.01'],O(['Force2Act (ours)',10,9,1,0,'22%','0.29'])],{int:1,low:1,nobest:[1,2,3]});
+table('#ab3',['Variant','Pivot','Box','Wipe','Round','USB','Avg.'],[
+ ['MLP law (no MoFE)',81.3,66.7,100,100,84,86.2],['Force2Act with one component removed'],['No geometric gates',31.3,100,2,96,88,48.5],['Router sees direction',58.7,96.7,100,100,88,78.4],['One expert per case',83.3,96.7,22,100,92,78],['No level penalty',67.3,76.7,100,98,84,80],['No offset bound',90,96.7,98,100,80,92.8],
+ O(['Force2Act (ours)',93.3,100,98,96,76,93.8])],{heat:1,delta:93.8});
+
+/* result cards */
+$('#rank').innerHTML=[['Force2Act',93.8],['ACP',77.0],['ManiFlow',26.9],['ForceVLA',26.2],['MolmoAct2',23.9],['RDP',14.1],['ImplicitRDP',8.9]].map(([n,v],i)=>`<div class="rk${i?'':' o'}"><span>${n}</span><div><i style="width:${v}%"></i></div><b>${v.toFixed(1)}</b></div>`).join('');
+(function(){const W=360,H=300,l=30,r=14,t=22,b=30,M=['0°','2°','4°'],X=i=>l+i*(W-l-r)/2,Y=v=>t+(100-v)/100*(H-t-b);
+  const S=[['ManiFlow',[0,100,100],'#d98a1f',2,''],['ACP',[100,40,10],'#7b828c',2,''],['Force2Act',[100,100,100],'#2457c5',2.8,'']];
+  let h='';for(const v of [0,50,100])h+=`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e7e9ec"/><text x="${l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+  M.forEach((m,i)=>h+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle">${m}</text>`);
+  for(const [n,d,c,w,da] of S){h+=`<polyline fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="${da}" stroke-linejoin="round" stroke-linecap="round" points="${d.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/>`;
+    d.forEach((v,i)=>h+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${n==='Force2Act'?4:3.2}" fill="${c}" stroke="#fff" stroke-width="2"><title>${n}, ${M[i]}: ${v}%</title></circle>`)}
+  h+=`<text x="${X(1)}" y="${Y(100)-9}" text-anchor="middle" style="fill:#2457c5;font-weight:700">Force2Act 100</text><text x="${X(2)-10}" y="${Y(10)+19}" text-anchor="end" style="fill:#3a3f47;font-weight:600">ACP 10</text><text x="${X(0)+(X(1)-X(0))*.25+10}" y="${Y(25)+5}" style="fill:#9a5f0c;font-weight:600">ManiFlow</text>`;
+  $('#inc').innerHTML=h})();
+(function(){const W=360,H=300,l=30,r=14,t=22,b=30,M=[0.4,0.5,0.6,0.7,0.8,0.9],X=i=>l+i*(W-l-r)/5,Y=v=>t+(100-v)/100*(H-t-b);
+  const S=[['Five other baselines',[0,0,0,0,0,0],'#d3d7dc',2],['ACP',[96,96,96,76,20,0],'#7b828c',2],['Force2Act',[100,96,92,92,88,92],'#2457c5',2.6]];
+  let h='';for(const v of [0,50,100])h+=`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e7e9ec"/><text x="${l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+  M.forEach((m,i)=>h+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle">${m}</text>`);
+  for(const [n,d,c,w] of S){h+=`<polyline fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" points="${d.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/>`;
+    d.forEach((v,i)=>h+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${n==='Force2Act'?4:3.2}" fill="${c}" stroke="#fff" stroke-width="2"><title>${n}, ${M[i]} kg: ${v}%</title></circle>`)}
+  h+=`<text x="${X(5)}" y="${Y(92)+30}" text-anchor="end" style="fill:#2457c5;font-weight:700">Force2Act 92</text><text x="${X(4)+9}" y="${Y(20)-5}" style="fill:#3a3f47;font-weight:600">ACP 20</text><text x="${X(0)-2}" y="${Y(0)-9}">five other baselines: 0 at every mass</text>`;
+  $('#mass').innerHTML=h})();
+
+let last=performance.now();
+(function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;
+  hero();
+  for(const o of rows){if(!o.v._vis)continue;const t=o.v.currentTime;o.ph.style.left=Math.min(100,t/o.R.T*100)+'%';const e=smooth(o.R.tl,t,.3);if(e!==o.cur){o.cur=e;o.dot.style.background=EXP[e][1];o.txt.textContent=EXP[e][0]}}
+  requestAnimationFrame(loop)})(last);
+addEventListener('scroll',()=>$('#nav').classList.toggle('on',scrollY>8),{passive:true});
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.rv').forEach(e=>ro.observe(e));
+</script>
+</body>
+</html>
