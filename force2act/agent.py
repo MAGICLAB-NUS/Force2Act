@@ -1,6 +1,6 @@
 """Force2Act at run time: the global force policy once per chunk, MoFE and the compliance command every step.
 
-    agent = Force2ActAgent.from_pretrained("hf://k3rth1v5n/Force2Act-Sim/pivot_block")
+    agent = Force2ActAgent.from_pretrained("hf://NUSMAGIC/Force2Act-Sim/pivot_block")
     agent.reset()
     command = agent.act(position, quaternion_wxyz, wrench_world, image)   # every control step
 

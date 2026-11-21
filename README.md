@@ -11,13 +11,13 @@ manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
 
 | | |
 |---|---|
-| Models | [`k3rth1v5n/Force2Act-Sim`](https://huggingface.co/k3rth1v5n/Force2Act-Sim) |
-| Demonstrations | [`k3rth1v5n/Force2Act-Bench-Data`](https://huggingface.co/datasets/k3rth1v5n/Force2Act-Bench-Data) |
+| Models | [`NUSMAGIC/Force2Act-Sim`](https://huggingface.co/NUSMAGIC/Force2Act-Sim) |
+| Demonstrations | [`NUSMAGIC/Force2Act-Bench-Data`](https://huggingface.co/datasets/NUSMAGIC/Force2Act-Bench-Data) |
 
 ## Installation
 
 ```bash
-git clone https://github.com/k3rth1v5n/Force2Act.git && cd Force2Act
+git clone https://github.com/MAGICLAB-NUS/Force2Act.git && cd Force2Act
 conda create -n force2act python=3.12 && conda activate force2act
 pip install torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu126
 pip install -e ".[bench,train]"
@@ -77,7 +77,7 @@ Options can also be collected in a YAML file and passed with `--config` (see `co
 ## Train
 
 ```bash
-hf download k3rth1v5n/Force2Act-Bench-Data --repo-type dataset --local-dir data
+hf download NUSMAGIC/Force2Act-Bench-Data --repo-type dataset --local-dir data
 
 # global force policy, one per task (60 epochs)
 force2act-train --config configs/policy/pivot_block.yaml --output runs/pivot_block
@@ -96,7 +96,7 @@ The MoFE ablations of the paper are available as flags: `--no-gates`, `--router-
 ```python
 from force2act.agent import Force2ActAgent
 
-agent = Force2ActAgent.from_pretrained("hf://k3rth1v5n/Force2Act-Sim/pivot_block")
+agent = Force2ActAgent.from_pretrained("hf://NUSMAGIC/Force2Act-Sim/pivot_block")
 agent.reset()
 command = agent.act(position, quaternion_wxyz, wrench_world, image)   # at 15 Hz
 # command.position, command.quaternion_wxyz: pose target

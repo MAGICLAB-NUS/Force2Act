@@ -2,5 +2,5 @@
 
 __version__ = "1.0.0"
 
-HUB_MODELS = "k3rth1v5n/Force2Act-Sim"          # trained policies (one folder per task) and MoFE ("mofe")
-HUB_DATA = "k3rth1v5n/Force2Act-Bench-Data"     # demonstrations (one LeRobot dataset per task)
+HUB_MODELS = "NUSMAGIC/Force2Act-Sim"          # trained policies (one folder per task) and MoFE ("mofe")
+HUB_DATA = "NUSMAGIC/Force2Act-Bench-Data"     # demonstrations (one LeRobot dataset per task)
