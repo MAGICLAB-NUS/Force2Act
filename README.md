@@ -62,7 +62,6 @@ manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
 - [Evaluate Your Own Policy](#evaluate-your-own-policy)
 - [Train](#train)
 - [Use Force2Act in Your Own Loop](#use-force2act-in-your-own-loop)
-- [Repository Layout](#repository-layout)
 - [Citation](#citation)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -154,22 +153,6 @@ agent.reset()
 command = agent.act(position, quaternion_wxyz, wrench_world, image)   # at 15 Hz
 # command.position, command.quaternion_wxyz: pose target
 # command.force_axes, command.frame_quaternion_wxyz, command.wrench: hybrid force command
-```
-
-## Repository Layout
-
-```text
-force2act/policy/          global force policy: encoders, DiT action head, relative force, real-time chunking
-force2act/mofe/            Mixture of Force Experts: gates, router, force laws, training
-force2act/control/         motion frame and the per-step normal-force command
-force2act/data/            LeRobot dataset loading and normalizers
-force2act/agent.py         Force2Act at run time (policy once per chunk, MoFE every step)
-force2act/train_policy.py  training of the global force policy
-force2act_bench/           Force2Act-Bench: tasks, environment and evaluation
-force2act_bench/sim/       Genesis scenes, robots, controllers, cameras and contact sensing
-force2act_bench/policies/  policy interface and the Force2Act policy
-configs/policy/            training configs, one per task
-configs/bench/             example benchmark config
 ```
 
 ## Citation
