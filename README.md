@@ -78,7 +78,7 @@ manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
 | ACP | ✓ | 64.0 | 50.0 | **100.0** | **100.0** | **96.0** | 77.0 |
 | **Force2Act** | ✓ | **93.3** | **100.0** | 98.0 | 96.0 | 76.0 | **93.8** |
 
-**Real robot** (Flexiv arm, 20 trials per condition). Demonstrations use a 0.116 kg block and a flat
+**Real robot** (Flexiv Enlight L arm, 20 trials per condition). Demonstrations use a 0.116 kg block and a flat
 table; the 0.418 kg block and the 10° incline are never demonstrated.
 
 | Task | Condition | Force2Act | ACP | ForceVLA | ManiFlow |
@@ -86,10 +86,12 @@ table; the 0.418 kg block and the 10° incline are never demonstrated.
 | Block pivoting | 0.116 kg block | **19/20** | 18/20 | 0/20 | 3/20 |
 | Block pivoting | 0.418 kg block (unseen) | **20/20** | 3/20 | 0/20 | 0/20 |
 | Press-push box | flat table | **18/20** | 0/20 | 14/20 | 10/20 |
-| Press-push box | 10° incline (unseen) | **20/20** | 1/20 | 0/20 | 17/20 |
+| Press-push box | 10° incline (unseen) | **20/20** | 1/20 | 0/20 | 17/20<sup>†</sup> |
 | Press-push T | demonstrated setup | **20/20** | 8/20 | 0/20 | 3/20 |
 | Plug insertion | demonstrated setup | **16/20** | 2/20 | 13/20 | 0/20 |
 | **Average** | | **94.2%** | 26.7% | 22.5% | 27.5% |
+
+<sup>†</sup> ManiFlow succeeds on the incline only by pressing about 3.8× harder than in the demonstrations.
 
 Rollout videos of every task are on the [project page](https://magiclab-nus.github.io/Force2Act/).
 
