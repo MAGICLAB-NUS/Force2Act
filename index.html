@@ -40,14 +40,16 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:5
 nav .brand{font-weight:800;letter-spacing:-.02em;color:var(--ink);font-size:17px} nav .brand span{color:var(--acc)} nav .brand:hover{text-decoration:none}
 nav .links{display:flex;gap:26px;font-size:14px;font-weight:500}
 nav .links a{color:var(--mut)} nav .links a:hover{color:var(--ink);text-decoration:none}
-@media(max-width:720px){nav .links{gap:14px;font-size:13px} nav .links a.opt{display:none}}
+nav .lablogo{height:17px;width:auto} nav .links{margin-left:auto;margin-right:28px}
+@media(max-width:720px){nav .links{gap:14px;font-size:13px;margin-right:0} nav .links a.opt{display:none} nav .lablogo{display:none}}
 
 /* title */
-.top{text-align:center;padding:54px 0 40px}
+.top{text-align:center;padding:54px 0 44px}
 h1{font-size:clamp(64px,11vw,136px);line-height:.92;letter-spacing:-.055em;font-weight:800;margin:0}
 h1 span{color:var(--acc)}
 .title{font-size:clamp(20px,2.5vw,31px);line-height:1.22;letter-spacing:-.022em;font-weight:600;margin:22px auto 0;max-width:26em}
-.auth{margin-top:18px;font-size:17px;color:var(--ink2)} .auth small{display:block;margin-top:4px;font-size:14px;color:var(--mut)}
+.auth{margin-top:22px;font-size:clamp(17px,1.7vw,20px);font-weight:500;color:var(--ink);display:flex;flex-wrap:wrap;justify-content:center;gap:4px 30px} .auth sup{font-size:.62em;font-weight:500;color:var(--mut);margin-left:1px}
+.auth small{flex-basis:100%;margin-top:10px;font-size:15.5px;font-weight:400;color:var(--ink2)} .auth small.c{margin-top:2px;font-size:13.5px;color:var(--mut)}
 .btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:26px}
 .btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:600;border:1px solid var(--line);color:var(--ink);background:#fff;box-shadow:0 1px 2px rgba(15,17,20,.05);transition:.15s}
 .btn:hover{border-color:var(--ink);text-decoration:none}
@@ -55,28 +57,13 @@ h1 span{color:var(--acc)}
 .btn.off{color:var(--dim);cursor:default} .btn.off:hover{border-color:var(--line)} .btn small{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase}
 .btn svg{width:16px;height:16px;flex:none}
 
-/* hero video */
-.hero{position:relative;border-radius:22px;overflow:hidden;background:#0d0e10;aspect-ratio:16/9;max-height:calc(100svh - 110px);margin-inline:auto;box-shadow:0 2px 4px rgba(15,17,20,.06),0 30px 70px -30px rgba(15,17,20,.45)}
-.hero video{width:100%;height:100%;object-fit:cover;transition:opacity .35s}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3),transparent 22%,transparent 62%,rgba(0,0,0,.66));pointer-events:none}
-.hero .tl{position:absolute;left:20px;top:20px;z-index:2;display:flex;gap:8px;flex-wrap:wrap}
-.hero .cap{position:absolute;left:24px;right:24px;bottom:28px;z-index:2;color:#fff;display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
-.hero .cap b{display:block;font-size:clamp(22px,3.2vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1.05;text-shadow:0 1px 14px rgba(0,0,0,.5)}
-.hero .cap small{display:block;margin-top:8px;font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.85}
-.hero .bar{position:absolute;left:0;right:0;bottom:0;height:8px;border-radius:0;background:rgba(255,255,255,.16);z-index:2;pointer-events:none} .hero .bar .ph{width:3px;top:-5px;bottom:0;background:#fff;box-shadow:none}
-.hdots{display:flex;gap:6px;padding-bottom:6px} .hdots i{width:26px;height:3px;border-radius:2px;background:rgba(255,255,255,.35);transition:background .3s} .hdots i.on{background:#fff}
 .chip{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 10px 0 8px;border-radius:999px;background:rgba(255,255,255,.95);color:var(--ink);font-size:12.5px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .chip i{width:10px;height:10px;border-radius:3px;background:#ccc;transition:background .12s}
-.hero .chip,.hero .pill{height:34px;font-size:15px;padding:0 14px 0 11px} .hero .pill{padding:0 14px} .hero .chip i{width:13px;height:13px}
 .pill{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:600;background:rgba(15,17,20,.78);color:#fff}
 .pill.w{background:rgba(255,255,255,.95);color:var(--ink)} .pill.g{background:var(--ok)} .pill.r{background:#c2362f}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mut)}
 .legend span{display:inline-flex;align-items:center;gap:6px;transition:color .12s} .legend span.on{color:var(--ink);font-weight:600}
 .legend i{width:10px;height:10px;border-radius:3px} .legend em{font:500 11.5px/1 var(--mono);font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-right:4px}
-#hleg{justify-content:center;align-items:center;gap:6px 6px;margin-top:16px}
-#hleg span{height:30px;padding:0 12px 0 10px;border-radius:999px;border:1px solid transparent;color:var(--dim);font-weight:500} #hleg span i{opacity:.45}
-#hleg span.on{background:var(--c);border-color:var(--c);color:#fff;font-weight:700} #hleg span.on i{background:#fff!important;opacity:1} #hleg em{margin-right:8px}
-@media(max-width:620px){.hero{border-radius:14px}.hero .tl{left:10px;top:10px}.hero .chip,.hero .pill{height:26px;font-size:12px;padding:0 9px}.hero .cap{left:12px;right:12px;bottom:16px}.hero .cap small{font-size:10px}.hdots{display:none}}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:44px}
 .stats div{padding:26px 22px 24px 0} .stats div+div{padding-left:22px;border-left:1px solid var(--line)}
@@ -151,6 +138,9 @@ figure{margin:0} figure img{width:100%;height:auto} figcaption{margin:14px auto 
 .frame video{width:100%;aspect-ratio:16/9}
 
 /* benchmark */
+.simg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px} @media(max-width:940px){.simg{grid-template-columns:1fr 1fr}} @media(max-width:600px){.simg{grid-template-columns:1fr}}
+.simc{overflow:hidden} .simc .cv{border-radius:0} .simc b{display:block;margin:14px 18px 0;font-size:17px;letter-spacing:-.01em} .simc span:not(.pill){display:block;margin:3px 18px 16px;font-size:14px;line-height:1.45;color:var(--mut)}
+.cards.two{grid-template-columns:1fr 1fr} @media(max-width:800px){.cards.two{grid-template-columns:1fr}}
 .bench{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 @media(max-width:900px){.bench{grid-template-columns:repeat(2,1fr)}}
 .bench figure{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)} .bench img{aspect-ratio:4/3;object-fit:cover;width:100%}
@@ -190,30 +180,29 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
 <nav id="nav"><div class="wrap">
   <a class="brand" href="#top">Force<span>2</span>Act</a>
   <div class="links"><a href="#idea">Idea</a><a href="#method">Method</a><a href="#real">Real robot</a><a class="opt" href="#video">Video</a><a href="#sim">Simulation</a><a class="opt" href="#bibtex">BibTeX</a></div>
+  <img class="lablogo" src="assets/img/magic-logo.png" width="1265" height="185" alt="MAGIC Lab">
 </div></nav>
 
 <header id="top" class="top"><div class="wrap">
   <h1>Force<span>2</span>Act</h1>
   <p class="title">A Force-Aware Visuomotor Policy for Generalizable Compliant Robot Manipulation</p>
-  <!-- Replace with the author list and affiliation when the paper is public. -->
-  <p class="auth">Anonymous authors<small>Under review</small></p>
+  <p class="auth"><span>Keerthi Vasan Murugan<sup>1</sup></span><span>Fangguo Zhao<sup>1,2</sup></span><span>Jiafei Duan<sup>1,*</sup></span>
+    <small><sup>1</sup>National University of Singapore &nbsp;·&nbsp; <sup>2</sup>Zhejiang University</small><small class="c"><sup>*</sup>Corresponding author</small></p>
   <div class="btns">
-    <!-- Paper: replace this span with <a class="btn" href="ARXIV_URL">Paper</a> -->
+    <!-- Paper: replace this span with <a class="btn" href="ARXIV_URL">Paper</a> once the arXiv link exists -->
     <span class="btn off">Paper <small>soon</small></span>
     <a class="btn p" href="#video"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg>Video</a>
     <a class="btn" href="https://github.com/MAGICLAB-NUS/Force2Act"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.73-.5.05-.49.05-.49.8.06 1.23.83 1.23.83.72 1.22 1.88.87 2.33.66.07-.52.28-.87.5-1.07-1.77-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0"/></svg>Code</a>
+    <a class="btn" href="https://huggingface.co/NUSMAGIC/Force2Act-Sim">🤗 Models</a>
+    <a class="btn" href="https://huggingface.co/datasets/NUSMAGIC/Force2Act-Bench-Data">🤗 Dataset</a>
     <a class="btn" href="#bibtex">BibTeX</a>
   </div>
 </div></header>
 
-<div class="wrap wide">
-  <div class="hero">
-    <video id="hv" muted playsinline autoplay preload="auto" poster="assets/img/pivot_poster.jpg" src="assets/video/pivot_f2a.mp4"></video>
-    <div class="tl"><span class="pill w">Force2Act</span><span class="chip"><i id="hdot"></i><span id="htxt">Free space</span></span></div>
-    <div class="cap"><div><b id="htask"></b><small id="hcap"></small></div><span class="hdots" id="hdots"></span></div>
-    <div class="bar" id="fbar"></div>
-  </div>
-  <div class="legend" id="hleg"><em>Force expert in use</em></div>
+
+<div class="wrap">
+  <figure><img src="assets/img/teaser.webp" width="2211" height="789" alt="Force2Act: a global force policy plans motion and target force, and force experts keep the contact stable at every step">
+  <figcaption><b>Plan, then stabilize.</b> A global force policy plans the motion and the target force, and force experts hold the contact at every control step. Trained on a 0.116 kg block, Force2Act pivots an unseen 0.418 kg block.</figcaption></figure>
 </div>
 
 <div class="wrap">
@@ -225,10 +214,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
   </div>
 </div>
 
-<section><div class="wrap">
-  <figure class="rv"><img src="assets/img/teaser.webp" width="2211" height="789" alt="Force2Act: a global force policy plans motion and target force, and force experts keep the contact stable at every step">
-  <figcaption><b>Plan, then stabilize.</b> A global force policy plans the motion and the target force, and force experts hold the contact at every control step. Trained on a 0.116 kg block, Force2Act pivots an unseen 0.418 kg block.</figcaption></figure>
-</div></section>
+
 
 <section id="abstract"><div class="wrap"><div class="abs">
   <div class="eye">Abstract</div>
@@ -292,15 +278,16 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
   <div class="head rv"><div class="eye">Simulation · Force2Act-Bench</div>
     <h2>Repeating the motion <span>is not enough.</span></h2>
     <p>Five contact-rich tasks in Genesis for testing force-aware policies. Every policy observes a single external RGB camera, so the contact cannot be resolved from vision and <b>must be inferred from force</b>.</p></div>
-  <div class="bench rv">
-    <figure><img src="assets/img/bench_pivot_block.webp" alt="" loading="lazy"><b>Block pivoting</b><span>Push a block against a wall until it stands upright. Six masses, 0.4 to 0.9 kg.</span></figure>
-    <figure><img src="assets/img/bench_push_box.webp" alt="" loading="lazy"><b>Press-push box</b><span>Push a low-friction box uphill by pressing only on its top face. Inclines of 0°, 2°, 4°.</span></figure>
-    <figure><img src="assets/img/bench_bottle_wiping.webp" alt="" loading="lazy"><b>Bottle wiping</b><span>Remove an ink line from a free-standing bottle without pushing it away.</span></figure>
-    <figure><img src="assets/img/bench_plug_insertion_round.webp" alt="" loading="lazy"><b>Round-plug insertion</b><span>Hole at the demonstrated position or displaced by 2 mm.</span></figure>
-    <figure><img src="assets/img/bench_plug_insertion_usb.webp" alt="" loading="lazy"><b>USB insertion</b><span>Insert a USB connector into a socket with a 1 mm tolerance.</span></figure>
-  </div>
-  <div class="cards">
+  <div class="simg">
+    <figure class="simc cardb rv"><div class="cv"><video muted loop playsinline preload="none" poster="assets/img/sim_pivot.jpg" src="assets/video/sim_pivot.mp4"></video><div class="lab"><span class="pill w">Force2Act</span><span class="pill g">0.9 kg block</span></div></div><b>Block pivoting</b><span>Push a block against a wall until it stands upright. Six masses, 0.4 to 0.9 kg.</span></figure>
+    <figure class="simc cardb rv"><div class="cv"><video muted loop playsinline preload="none" poster="assets/img/sim_box.jpg" src="assets/video/sim_box.mp4"></video><div class="lab"><span class="pill w">Force2Act</span><span class="pill g">4° incline</span></div></div><b>Press-push box</b><span>Push a low-friction box uphill by pressing only on its top face. Inclines of 0°, 2°, 4°.</span></figure>
+    <figure class="simc cardb rv"><div class="cv"><video muted loop playsinline preload="none" poster="assets/img/sim_wipe.jpg" src="assets/video/sim_wipe.mp4"></video><div class="lab"><span class="pill w">Force2Act</span></div></div><b>Bottle wiping</b><span>Remove an ink line from a free-standing bottle without pushing it away.</span></figure>
+    <figure class="simc cardb rv"><div class="cv"><video muted loop playsinline preload="none" poster="assets/img/sim_round.jpg" src="assets/video/sim_round.mp4"></video><div class="lab"><span class="pill w">Force2Act</span><span class="pill g">hole displaced 2 mm</span></div></div><b>Round-plug insertion</b><span>Hole at the demonstrated position or displaced by 2 mm.</span></figure>
+    <figure class="simc cardb rv"><div class="cv"><video muted loop playsinline preload="none" poster="assets/img/sim_usb.jpg" src="assets/video/sim_usb.mp4"></video><div class="lab"><span class="pill w">Force2Act</span></div></div><b>USB insertion</b><span>Insert a USB connector into a socket with a 1 mm tolerance.</span></figure>
     <div class="card cardb rv"><h4>Overall</h4><p>Success rate (%) over all 305 trials.</p><div id="rank"></div></div>
+  </div>
+  <p class="note" style="text-align:center;margin:14px 0 0">Rollouts of the released Force2Act policy on Force2Act-Bench, from the camera the policy observes. Block pivoting and the two insertions play at 2× speed, the others in real time.</p>
+  <div class="cards two">
     <div class="card cardb rv"><h4>Heavier blocks</h4><p>Block pivoting, success (%) against block mass (kg).</p><svg id="mass" viewBox="0 0 360 300" role="img" aria-label="Block pivoting success against block mass"></svg></div>
     <div class="card cardb rv"><h4>Steeper inclines</h4><p>Press-push box, success (%) against incline. No baseline solves every incline.</p><svg id="inc" viewBox="0 0 360 300" role="img" aria-label="Press-push box success against incline"></svg></div>
   </div>
@@ -326,16 +313,15 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
 
 <section id="bibtex"><div class="wrap" style="max-width:780px">
   <div class="eye" style="color:var(--mut);margin-bottom:14px">BibTeX</div>
-  <pre>@misc{force2act,
+  <pre>@misc{murugan2026force2act,
   title  = {Force2Act: A Force-Aware Visuomotor Policy for
             Generalizable Compliant Robot Manipulation},
-  author = {Anonymous},
-  note   = {Under review},
+  author = {Murugan, Keerthi Vasan and Zhao, Fangguo and Duan, Jiafei},
   year   = {2026}
 }</pre>
 </div></section>
 
-<footer><div class="wrap">Force2Act · All footage is of the real robot or of Force2Act-Bench; speeds are marked on each clip.</div></footer>
+<footer><div class="wrap">Force2Act · MAGIC Lab, National University of Singapore · All footage is of the real robot or of Force2Act-Bench; speeds are marked on each clip.</div></footer>
 
 <script src="assets/data.js"></script>
 <script>
@@ -362,16 +348,7 @@ function scrub(bar,fn){let d=0;const f=ev=>{const r=bar.getBoundingClientRect();
   bar.addEventListener('pointerdown',ev=>{d=1;bar.setPointerCapture(ev.pointerId);f(ev)});bar.addEventListener('pointermove',ev=>d&&f(ev));bar.addEventListener('pointerup',()=>d=0);bar.addEventListener('pointercancel',()=>d=0)}
 const vis=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;v._vis=e.isIntersecting;if(v.tagName==='VIDEO'){if(e.isIntersecting&&!reduce&&!v._hold)v.play().catch(()=>{});else v.pause()}}),{threshold:.2});
 
-/* hero: cycles through the four real-robot tasks */
-const hero=(()=>{const K=['pivot','box','pusht','plug'],v=$('#hv');let i=0,R,ph,cur='';v.setAttribute('muted','');vis.observe(v);
-  $('#hdots').innerHTML='<i></i>'.repeat(4);const leg={};
-  ORDER.forEach(e=>{const s=el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`);s.style.setProperty('--c',e==='free'?'#5d646d':EXP[e][1]);leg[e]=s;$('#hleg').append(s)});
-  const set=n=>{i=n%4;const k=K[i],T=TASKS[k];R=D.real[k];ph=fillBar($('#fbar'),R.tl,R.T);cur='';
-    $('#htask').textContent=T.t;$('#hcap').textContent=`${T.ood?'unseen ':''}${T.c} · real robot · ${R.speed}× speed`;[...$('#hdots').children].forEach((d,j)=>d.classList.toggle('on',j===i));
-    if(v.getAttribute('src')!==`assets/video/${k}_f2a.mp4`){v.poster=`assets/img/${k}_poster.jpg`;v.src=`assets/video/${k}_f2a.mp4`}if(v._vis&&!reduce)v.play().catch(()=>{})};
-  v.addEventListener('ended',()=>{v.style.opacity=0;setTimeout(()=>{set(i+1);v.style.opacity=1},350)});set(0);
-  return ()=>{if(!v._vis)return;const t=v.currentTime;ph.style.left=Math.min(100,t/R.T*100)+'%';const e=at(R.tl,t);if(e!==cur){cur=e;for(const k in leg)leg[k].classList.toggle('on',k===e);$('#hdot').style.background=EXP[e][1];$('#htxt').textContent=EXP[e][0]}}})();
-
+document.querySelectorAll('.simc video').forEach(v=>{v.setAttribute('muted','');vis.observe(v)});
 /* video matrix: tasks x policies */
 ORDER.forEach(e=>$('#rleg').append(el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`)));
 const rows=[];
@@ -430,7 +407,6 @@ $('#rank').innerHTML=[['Force2Act',93.8],['ACP',77.0],['ManiFlow',26.9],['ForceV
 
 let last=performance.now();
 (function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;
-  hero();
   for(const o of rows){if(!o.v._vis)continue;const t=o.v.currentTime;o.ph.style.left=Math.min(100,t/o.R.T*100)+'%';const e=at(o.R.tl,t);if(e!==o.cur){o.cur=e;o.dot.style.background=EXP[e][1];o.txt.textContent=EXP[e][0]}}
   requestAnimationFrame(loop)})(last);
 addEventListener('scroll',()=>$('#nav').classList.toggle('on',scrollY>8),{passive:true});
