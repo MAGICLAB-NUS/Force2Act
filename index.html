@@ -179,7 +179,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
 
 <nav id="nav"><div class="wrap">
   <a class="brand" href="#top">Force<span>2</span>Act</a>
-  <div class="links"><a href="#idea">Idea</a><a href="#method">Method</a><a href="#real">Real robot</a><a class="opt" href="#video">Video</a><a href="#sim">Simulation</a><a class="opt" href="#bibtex">BibTeX</a></div>
+  <div class="links"><a class="opt" href="#video">Video</a><a href="#idea">Idea</a><a href="#method">Method</a><a href="#real">Real robot</a><a href="#sim">Simulation</a><a class="opt" href="#bibtex">BibTeX</a></div>
   <img class="lablogo" src="assets/img/magic-logo.png" width="1265" height="185" alt="MAGIC Lab">
 </div></nav>
 
@@ -199,6 +199,10 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
   </div>
 </div></header>
 
+
+<div id="video" class="wrap" style="margin-bottom:44px">
+  <div class="frame"><video controls preload="metadata" playsinline poster="assets/img/video_poster.jpg" src="assets/video/force2act_video.mp4"></video></div>
+</div>
 
 <div class="wrap">
   <figure><img src="assets/img/teaser.webp" width="2211" height="789" alt="Force2Act: a global force policy plans motion and target force, and force experts keep the contact stable at every step">
@@ -268,13 +272,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
   </div></div>
 </section>
 
-<section id="video"><div class="wrap">
-  <div class="head rv"><div class="eye">Supplementary video</div>
-    <h2>The full story <span>in under three minutes.</span></h2></div>
-  <div class="frame rv"><video controls preload="none" playsinline poster="assets/img/video_poster.jpg" src="assets/video/force2act_video.mp4"></video></div>
-</div></section>
-
-<section id="sim" class="band"><div class="wrap">
+<section id="sim" class="band" style="background:#fff"><div class="wrap">
   <div class="head rv"><div class="eye">Simulation · Force2Act-Bench</div>
     <h2>Repeating the motion <span>is not enough.</span></h2>
     <p>Five contact-rich tasks in Genesis for testing force-aware policies. Every policy observes a single external RGB camera, so the contact cannot be resolved from vision and <b>must be inferred from force</b>.</p></div>
@@ -294,7 +292,7 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
   <p class="after">Force2Act keeps its success rate at every block mass and every incline, as its force follows the measured load. USB insertion, governed by lateral alignment rather than by the normal force, is the only task on which ACP and ForceVLA do better.</p>
 </div></section>
 
-<section id="ablations"><div class="wrap">
+<section id="ablations" class="band"><div class="wrap">
   <div class="head rv"><div class="eye">Ablations</div>
     <h2>Both policies are needed. <span>So is every part of MoFE.</span></h2>
     <p>On block pivoting, the reactive regulation reduces the failures from <b>30 to 10</b> of 150 trials. The full tables are below.</p></div>
