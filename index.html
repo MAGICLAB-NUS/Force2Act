@@ -285,10 +285,6 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
     <div class="card cardb rv"><h4>Overall</h4><p>Success rate (%) over all 305 trials.</p><div id="rank"></div></div>
   </div>
   <p class="note" style="text-align:center;margin:14px 0 0">Rollouts of the released Force2Act policy on Force2Act-Bench, from the camera the policy observes. Block pivoting and the two insertions play at 2× speed, the others in real time.</p>
-  <div class="cards two">
-    <div class="card cardb rv"><h4>Heavier blocks</h4><p>Block pivoting, success (%) against block mass (kg).</p><svg id="mass" viewBox="0 0 360 300" role="img" aria-label="Block pivoting success against block mass"></svg></div>
-    <div class="card cardb rv"><h4>Steeper inclines</h4><p>Press-push box, success (%) against incline. No baseline solves every incline.</p><svg id="inc" viewBox="0 0 360 300" role="img" aria-label="Press-push box success against incline"></svg></div>
-  </div>
   <p class="after">Force2Act keeps its success rate at every block mass and every incline, as its force follows the measured load. USB insertion, governed by lateral alignment rather than by the normal force, is the only task on which ACP and ForceVLA do better.</p>
 </div></section>
 
@@ -386,23 +382,6 @@ table('#ab3',['Variant','Pivot','Box','Wipe','Round','USB','Avg.'],[
 
 /* result cards */
 $('#rank').innerHTML=[['Force2Act',93.8],['ACP',77.0],['ManiFlow',26.9],['ForceVLA',26.2],['MolmoAct2',23.9],['RDP',14.1],['ImplicitRDP',8.9]].map(([n,v],i)=>`<div class="rk${i?'':' o'}"><span>${n}</span><div><i style="width:${v}%"></i></div><b>${v.toFixed(1)}</b></div>`).join('');
-(function(){const W=360,H=300,l=30,r=14,t=22,b=30,M=['0°','2°','4°'],X=i=>l+i*(W-l-r)/2,Y=v=>t+(100-v)/100*(H-t-b);
-  const S=[['ManiFlow',[0,100,100],'#d98a1f',2,''],['ACP',[100,40,10],'#7b828c',2,''],['Force2Act',[100,100,100],'#2457c5',2.8,'']];
-  let h='';for(const v of [0,50,100])h+=`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e7e9ec"/><text x="${l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
-  M.forEach((m,i)=>h+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle">${m}</text>`);
-  for(const [n,d,c,w,da] of S){h+=`<polyline fill="none" stroke="${c}" stroke-width="${w}" stroke-dasharray="${da}" stroke-linejoin="round" stroke-linecap="round" points="${d.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/>`;
-    d.forEach((v,i)=>h+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${n==='Force2Act'?4:3.2}" fill="${c}" stroke="#fff" stroke-width="2"><title>${n}, ${M[i]}: ${v}%</title></circle>`)}
-  h+=`<text x="${X(1)}" y="${Y(100)-9}" text-anchor="middle" style="fill:#2457c5;font-weight:700">Force2Act 100</text><text x="${X(2)-10}" y="${Y(10)+19}" text-anchor="end" style="fill:#3a3f47;font-weight:600">ACP 10</text><text x="${X(0)+(X(1)-X(0))*.25+10}" y="${Y(25)+5}" style="fill:#9a5f0c;font-weight:600">ManiFlow</text>`;
-  $('#inc').innerHTML=h})();
-(function(){const W=360,H=300,l=30,r=14,t=22,b=30,M=[0.4,0.5,0.6,0.7,0.8,0.9],X=i=>l+i*(W-l-r)/5,Y=v=>t+(100-v)/100*(H-t-b);
-  const S=[['Five other baselines',[0,0,0,0,0,0],'#d3d7dc',2],['ACP',[96,96,96,76,20,0],'#7b828c',2],['Force2Act',[100,96,92,92,88,92],'#2457c5',2.6]];
-  let h='';for(const v of [0,50,100])h+=`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e7e9ec"/><text x="${l-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
-  M.forEach((m,i)=>h+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle">${m}</text>`);
-  for(const [n,d,c,w] of S){h+=`<polyline fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" points="${d.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/>`;
-    d.forEach((v,i)=>h+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${n==='Force2Act'?4:3.2}" fill="${c}" stroke="#fff" stroke-width="2"><title>${n}, ${M[i]} kg: ${v}%</title></circle>`)}
-  h+=`<text x="${X(5)}" y="${Y(92)+30}" text-anchor="end" style="fill:#2457c5;font-weight:700">Force2Act 92</text><text x="${X(4)+9}" y="${Y(20)-5}" style="fill:#3a3f47;font-weight:600">ACP 20</text><text x="${X(0)-2}" y="${Y(0)-9}">five other baselines: 0 at every mass</text>`;
-  $('#mass').innerHTML=h})();
-
 let last=performance.now();
 (function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;
   for(const o of rows){if(!o.v._vis)continue;const t=o.v.currentTime;o.ph.style.left=Math.min(100,t/o.R.T*100)+'%';const e=at(o.R.tl,t);if(e!==o.cur){o.cur=e;o.dot.style.background=EXP[e][1];o.txt.textContent=EXP[e][0]}}
