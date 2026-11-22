@@ -370,7 +370,7 @@ const hero=(()=>{const K=['pivot','box','pusht','plug'],v=$('#hv');let i=0,R,ph,
     $('#htask').textContent=T.t;$('#hcap').textContent=`${T.ood?'unseen ':''}${T.c} · real robot · ${R.speed}× speed`;[...$('#hdots').children].forEach((d,j)=>d.classList.toggle('on',j===i));
     if(v.getAttribute('src')!==`assets/video/${k}_f2a.mp4`){v.poster=`assets/img/${k}_poster.jpg`;v.src=`assets/video/${k}_f2a.mp4`}if(v._vis&&!reduce)v.play().catch(()=>{})};
   v.addEventListener('ended',()=>{v.style.opacity=0;setTimeout(()=>{set(i+1);v.style.opacity=1},350)});set(0);
-  return ()=>{if(!v._vis)return;const t=v.currentTime;ph.style.left=Math.min(100,t/R.T*100)+'%';const e=smooth(R.tl,t,.3);if(e!==cur){cur=e;for(const k in leg)leg[k].classList.toggle('on',k===e);$('#hdot').style.background=EXP[e][1];$('#htxt').textContent=EXP[e][0]}}})();
+  return ()=>{if(!v._vis)return;const t=v.currentTime;ph.style.left=Math.min(100,t/R.T*100)+'%';const e=at(R.tl,t);if(e!==cur){cur=e;for(const k in leg)leg[k].classList.toggle('on',k===e);$('#hdot').style.background=EXP[e][1];$('#htxt').textContent=EXP[e][0]}}})();
 
 /* video matrix: tasks x policies */
 ORDER.forEach(e=>$('#rleg').append(el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`)));
@@ -431,7 +431,7 @@ $('#rank').innerHTML=[['Force2Act',93.8],['ACP',77.0],['ManiFlow',26.9],['ForceV
 let last=performance.now();
 (function loop(now){const dt=Math.min(.1,(now-last)/1000);last=now;
   hero();
-  for(const o of rows){if(!o.v._vis)continue;const t=o.v.currentTime;o.ph.style.left=Math.min(100,t/o.R.T*100)+'%';const e=smooth(o.R.tl,t,.3);if(e!==o.cur){o.cur=e;o.dot.style.background=EXP[e][1];o.txt.textContent=EXP[e][0]}}
+  for(const o of rows){if(!o.v._vis)continue;const t=o.v.currentTime;o.ph.style.left=Math.min(100,t/o.R.T*100)+'%';const e=at(o.R.tl,t);if(e!==o.cur){o.cur=e;o.dot.style.background=EXP[e][1];o.txt.textContent=EXP[e][0]}}
   requestAnimationFrame(loop)})(last);
 addEventListener('scroll',()=>$('#nav').classList.toggle('on',scrollY>8),{passive:true});
 const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.rv').forEach(e=>ro.observe(e));
