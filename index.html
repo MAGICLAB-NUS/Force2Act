@@ -73,7 +73,9 @@ h1 span{color:var(--acc)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mut)}
 .legend span{display:inline-flex;align-items:center;gap:6px;transition:color .12s} .legend span.on{color:var(--ink);font-weight:600}
 .legend i{width:10px;height:10px;border-radius:3px} .legend em{font:500 11.5px/1 var(--mono);font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-right:4px}
-#hleg{justify-content:center;margin-top:16px}
+#hleg{justify-content:center;align-items:center;gap:6px 6px;margin-top:16px}
+#hleg span{height:30px;padding:0 12px 0 10px;border-radius:999px;border:1px solid transparent;color:var(--dim);font-weight:500} #hleg span i{opacity:.45}
+#hleg span.on{background:var(--c);border-color:var(--c);color:#fff;font-weight:700} #hleg span.on i{background:#fff!important;opacity:1} #hleg em{margin-right:8px}
 @media(max-width:620px){.hero{border-radius:14px}.hero .tl{left:10px;top:10px}.hero .chip,.hero .pill{height:26px;font-size:12px;padding:0 9px}.hero .cap{left:12px;right:12px;bottom:16px}.hero .cap small{font-size:10px}.hdots{display:none}}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:44px}
@@ -363,12 +365,12 @@ const vis=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;v._vis=e.
 /* hero: cycles through the four real-robot tasks */
 const hero=(()=>{const K=['pivot','box','pusht','plug'],v=$('#hv');let i=0,R,ph,cur='';v.setAttribute('muted','');vis.observe(v);
   $('#hdots').innerHTML='<i></i>'.repeat(4);const leg={};
-  ORDER.forEach(e=>{const s=el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`);leg[e]=s;$('#hleg').append(s)});
+  ORDER.forEach(e=>{const s=el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`);s.style.setProperty('--c',e==='free'?'#5d646d':EXP[e][1]);leg[e]=s;$('#hleg').append(s)});
   const set=n=>{i=n%4;const k=K[i],T=TASKS[k];R=D.real[k];ph=fillBar($('#fbar'),R.tl,R.T);cur='';
     $('#htask').textContent=T.t;$('#hcap').textContent=`${T.ood?'unseen ':''}${T.c} · real robot · ${R.speed}× speed`;[...$('#hdots').children].forEach((d,j)=>d.classList.toggle('on',j===i));
     if(v.getAttribute('src')!==`assets/video/${k}_f2a.mp4`){v.poster=`assets/img/${k}_poster.jpg`;v.src=`assets/video/${k}_f2a.mp4`}if(v._vis&&!reduce)v.play().catch(()=>{})};
   v.addEventListener('ended',()=>{v.style.opacity=0;setTimeout(()=>{set(i+1);v.style.opacity=1},350)});set(0);
-  return ()=>{if(!v._vis)return;const t=v.currentTime;ph.style.left=Math.min(100,t/R.T*100)+'%';const e=smooth(R.tl,t,.3);if(e!==cur){if(leg[cur])leg[cur].classList.remove('on');cur=e;leg[e].classList.add('on');$('#hdot').style.background=EXP[e][1];$('#htxt').textContent=EXP[e][0]}}})();
+  return ()=>{if(!v._vis)return;const t=v.currentTime;ph.style.left=Math.min(100,t/R.T*100)+'%';const e=smooth(R.tl,t,.3);if(e!==cur){cur=e;for(const k in leg)leg[k].classList.toggle('on',k===e);$('#hdot').style.background=EXP[e][1];$('#htxt').textContent=EXP[e][0]}}})();
 
 /* video matrix: tasks x policies */
 ORDER.forEach(e=>$('#rleg').append(el('span','',`<i style="background:${EXP[e][1]}"></i>${EXP[e][0]}`)));
