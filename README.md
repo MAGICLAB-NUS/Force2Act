@@ -1,18 +1,97 @@
-# Force2Act
+<div align="center">
 
-Force2Act is a policy for contact-rich manipulation. A **global force policy** plans chunks of poses and
-wrenches with flow matching, seeing force relative to its recent magnitude. A **Mixture of Force Experts
-(MoFE)** sets the normal force at every control step from seven learned contact laws (pushing, two sticking
-laws, three sliding levels, insertion). A router chooses among the laws that the measured contact geometry
-admits. A hybrid motion–force controller executes the result.
+# Force2Act: A Force-Aware Visuomotor Policy for Generalizable Compliant Robot Manipulation
+
+Keerthi Vasan Murugan<sup>1</sup>,
+Fangguo Zhao<sup>1,2</sup>,
+[Jiafei Duan](https://jiafei1224.github.io/)<sup>1,*</sup>
+
+<sup>1</sup>National University of Singapore &nbsp; <sup>2</sup>Zhejiang University &nbsp; <sup>*</sup>Corresponding author
+
+[Project Page](https://magiclab-nus.github.io/Force2Act/) · [Models](https://huggingface.co/NUSMAGIC/Force2Act-Sim) · [Dataset](https://huggingface.co/datasets/NUSMAGIC/Force2Act-Bench-Data) · [BibTeX](#citation)
+
+<!-- TODO: add the paper link once it is on arXiv: [Paper](https://arxiv.org/abs/XXXX.XXXXX) · -->
+
+<img src="assets/teaser.jpg" width="95%" alt="Force2Act plans motion and target force with a global force policy and keeps the contact stable with force experts">
+
+</div>
+
+## Overview
+
+Contact-rich manipulation requires a robot to regulate the force it applies, not only where it moves.
+Policies that learn this force from demonstrations reproduce the force levels they were trained on, which
+fails once the interaction demands more force than any demonstration: a heavier object, a steeper support.
+
+Force2Act is a hybrid force–position policy built on two complementary mechanisms:
+
+- A **global force policy** plans chunks of poses and wrenches with flow matching, once per action chunk.
+  It sees and predicts force relative to its recent magnitude, so the planned force scales with the load.
+- A **Mixture of Force Experts (MoFE)** sets the normal force at every control step from seven learned
+  contact laws (pushing, two sticking laws, three sliding levels, insertion). A router chooses among the
+  laws that the measured contact geometry admits.
+
+A hybrid motion–force controller executes the result.
+
+<p align="center">
+  <img src="assets/overview.png" alt="Overview of Force2Act: global force policy, reactive compliance policy (MoFE) and hybrid controller" width="100%">
+</p>
 
 This repository contains Force2Act (training and inference) and **Force2Act-Bench**, five contact-rich
 manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
+
+<p align="center">
+  <img src="assets/bench.jpg" alt="The five tasks of Force2Act-Bench" width="100%">
+  <br>
+  <em>Force2Act-Bench: block pivoting, press-push box, bottle wiping, round-plug insertion and USB insertion.</em>
+</p>
 
 | | |
 |---|---|
 | Models | [`NUSMAGIC/Force2Act-Sim`](https://huggingface.co/NUSMAGIC/Force2Act-Sim) |
 | Demonstrations | [`NUSMAGIC/Force2Act-Bench-Data`](https://huggingface.co/datasets/NUSMAGIC/Force2Act-Bench-Data) |
+| Videos and results | [magiclab-nus.github.io/Force2Act](https://magiclab-nus.github.io/Force2Act/) |
+
+## Contents
+
+- [Results](#results)
+- [Installation](#installation)
+- [Evaluate Force2Act](#evaluate-force2act)
+- [Evaluate Your Own Policy](#evaluate-your-own-policy)
+- [Train](#train)
+- [Use Force2Act in Your Own Loop](#use-force2act-in-your-own-loop)
+- [Repository Layout](#repository-layout)
+- [Citation](#citation)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+
+## Results
+
+**Force2Act-Bench**, success rate (%) over all 305 trials:
+
+| Method | Uses force | Block pivoting | Press-push box | Bottle wiping | Round plug | USB | Average |
+|---|:---:|---:|---:|---:|---:|---:|---:|
+| MolmoAct2 | | 0.0 | 56.7 | 16.0 | 76.0 | 40.0 | 23.9 |
+| ManiFlow | | 0.0 | 66.7 | 0.0 | 86.0 | 76.0 | 26.9 |
+| ForceVLA | ✓ | 0.0 | 33.3 | 4.0 | 88.0 | **96.0** | 26.2 |
+| RDP | ✓ | 0.0 | 0.0 | 0.0 | 86.0 | 0.0 | 14.1 |
+| ImplicitRDP | ✓ | 0.0 | 0.0 | 2.0 | 52.0 | 0.0 | 8.9 |
+| ACP | ✓ | 64.0 | 50.0 | **100.0** | **100.0** | **96.0** | 77.0 |
+| **Force2Act** | ✓ | **93.3** | **100.0** | 98.0 | 96.0 | 76.0 | **93.8** |
+
+**Real robot** (Flexiv arm, 20 trials per condition). Demonstrations use a 0.116 kg block and a flat
+table; the 0.418 kg block and the 10° incline are never demonstrated.
+
+| Task | Condition | Force2Act | ACP | ForceVLA | ManiFlow |
+|---|---|:---:|:---:|:---:|:---:|
+| Block pivoting | 0.116 kg block | **19/20** | 18/20 | 0/20 | 3/20 |
+| Block pivoting | 0.418 kg block (unseen) | **20/20** | 3/20 | 0/20 | 0/20 |
+| Press-push box | flat table | **18/20** | 0/20 | 14/20 | 10/20 |
+| Press-push box | 10° incline (unseen) | **20/20** | 1/20 | 0/20 | 17/20 |
+| Press-push T | demonstrated setup | **20/20** | 8/20 | 0/20 | 3/20 |
+| Plug insertion | demonstrated setup | **16/20** | 2/20 | 13/20 | 0/20 |
+| **Average** | | **94.2%** | 26.7% | 22.5% | 27.5% |
+
+Rollout videos of every task are on the [project page](https://magiclab-nus.github.io/Force2Act/).
 
 ## Installation
 
@@ -43,7 +122,7 @@ trial, or `--trials N` for a quick run.
 | `plug_insertion_round` | hole at the demonstrated position, displaced by 2 mm | 2 × 25 | 96.0% |
 | `plug_insertion_usb` | socket at the demonstrated position | 25 | 76.0% |
 
-## Evaluate your own policy
+## Evaluate Your Own Policy
 
 A policy is any object with `reset(seed)`, `act(observation) -> Action` and `needs_image()`:
 
@@ -91,7 +170,7 @@ force2act-bench --task pivot_block --checkpoint runs/pivot_block --mofe runs/mof
 The MoFE ablations of the paper are available as flags: `--no-gates`, `--router-sees-direction`,
 `--one-per-case`, `--offset-bound 60` and `--lam 0`.
 
-## Use Force2Act in your own loop
+## Use Force2Act in Your Own Loop
 
 ```python
 from force2act.agent import Force2ActAgent
@@ -103,14 +182,31 @@ command = agent.act(position, quaternion_wxyz, wrench_world, image)   # at 15 Hz
 # command.force_axes, command.frame_quaternion_wxyz, command.wrench: hybrid force command
 ```
 
+## Repository Layout
+
+```text
+force2act/policy/          global force policy: encoders, DiT action head, relative force, real-time chunking
+force2act/mofe/            Mixture of Force Experts: gates, router, force laws, training
+force2act/control/         motion frame and the per-step normal-force command
+force2act/data/            LeRobot dataset loading and normalizers
+force2act/agent.py         Force2Act at run time (policy once per chunk, MoFE every step)
+force2act/train_policy.py  training of the global force policy
+force2act_bench/           Force2Act-Bench: tasks, environment and evaluation
+force2act_bench/sim/       Genesis scenes, robots, controllers, cameras and contact sensing
+force2act_bench/policies/  policy interface and the Force2Act policy
+configs/policy/            training configs, one per task
+configs/bench/             example benchmark config
+```
+
 ## Citation
 
+If you find Force2Act or Force2Act-Bench useful in your research, please cite:
+
 ```bibtex
-@inproceedings{force2act2027,
-  title     = {Force2Act},
-  author    = {},
-  booktitle = {},
-  year      = {2027}
+@misc{murugan2026force2act,
+  title  = {Force2Act: A Force-Aware Visuomotor Policy for Generalizable Compliant Robot Manipulation},
+  author = {Murugan, Keerthi Vasan and Zhao, Fangguo and Duan, Jiafei},
+  year   = {2026}
 }
 ```
 
@@ -124,4 +220,4 @@ The action head follows [DiT](https://github.com/facebookresearch/DiT), the flow
 
 ## License
 
-MIT
+Released under the MIT license. See [LICENSE](LICENSE).
