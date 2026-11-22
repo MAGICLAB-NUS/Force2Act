@@ -200,13 +200,8 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
 </div></header>
 
 
-<div id="video" class="wrap" style="margin-bottom:44px">
+<div id="video" class="wrap">
   <div class="frame"><video controls preload="metadata" playsinline poster="assets/img/video_poster.jpg" src="assets/video/force2act_video.mp4"></video></div>
-</div>
-
-<div class="wrap">
-  <figure><img src="assets/img/teaser.webp" width="2211" height="789" alt="Force2Act: a global force policy plans motion and target force, and force experts keep the contact stable at every step">
-  <figcaption><b>Plan, then stabilize.</b> A global force policy plans the motion and the target force, and force experts hold the contact at every control step. Trained on a 0.116 kg block, Force2Act pivots an unseen 0.418 kg block.</figcaption></figure>
 </div>
 
 <div class="wrap">
@@ -220,9 +215,15 @@ footer{margin-top:84px;border-top:1px solid var(--line);padding:26px 0 44px;font
 
 
 
+<section id="overview"><div class="wrap">
+  <div class="head"><div class="eye">Overview</div>
+    <h2>Press as hard as the task demands, <span>not as hard as it was shown.</span></h2></div>
+  <figure><img src="assets/img/teaser.webp" width="2211" height="789" alt="Force2Act: a global force policy plans motion and target force, and force experts keep the contact stable at every step">
+  <figcaption><b>Plan, then stabilize.</b> A global force policy plans the motion and the target force, and force experts hold the contact at every control step. Trained on a 0.116 kg block, Force2Act pivots an unseen 0.418 kg block.</figcaption></figure>
+</div></section>
+
 <section id="abstract"><div class="wrap"><div class="abs">
-  <div class="eye">Abstract</div>
-  <h3>Press as hard as the task demands, not as hard as it was shown.</h3>
+  <div class="eye" style="margin-bottom:16px">Abstract</div>
   <p>Contact-rich manipulation requires a robot to regulate the force it applies, not only where it moves. Existing force-aware policies learn this force from demonstrations and therefore reproduce the force levels they were trained on, which fails once the interaction demands more force than any demonstration. We present <b>Force2Act</b>, a hybrid force–position policy built on two complementary mechanisms. A global force policy plans the motion and the interaction force once per action chunk, with force represented relative to the measured interaction, so that the planned force scales with the load. Between planning steps, a reactive compliance policy, termed <b>Mixture of Force Experts</b>, identifies at every control step the force expert that governs the interaction and regulates the force through it, so that the contact holds when it changes within a chunk. We further introduce <b>Force2Act-Bench</b>, a simulation benchmark of five contact-rich tasks that gives the community a common and repeatable way to test force-aware policies and measure how well they regulate the interaction force. Force2Act achieves an overall success rate of 93.8%, compared with 77.0% for the strongest baseline, and its reactive regulation reduces the failures on block pivoting from 30 to 10 of 150 trials. On a real robot, Force2Act reaches an average success rate of 94.2% over four tasks, against at most 27.5% for the baselines.</p>
 </div></div></section>
 
