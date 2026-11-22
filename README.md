@@ -36,6 +36,10 @@ A hybrid motion–force controller executes the result.
   <img src="assets/overview.png" alt="Overview of Force2Act: global force policy, reactive compliance policy (MoFE) and hybrid controller" width="100%">
 </p>
 
+Force2Act reaches **93.8%** on Force2Act-Bench, against 77.0% for the strongest baseline, and **94.2%** on a real
+robot over four tasks, against at most 27.5% for the baselines. Full results and rollout videos are on the
+[project page](https://magiclab-nus.github.io/Force2Act/).
+
 This repository contains Force2Act (training and inference) and **Force2Act-Bench**, five contact-rich
 manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
 
@@ -53,7 +57,6 @@ manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
 
 ## Contents
 
-- [Results](#results)
 - [Installation](#installation)
 - [Evaluate Force2Act](#evaluate-force2act)
 - [Evaluate Your Own Policy](#evaluate-your-own-policy)
@@ -63,37 +66,6 @@ manipulation tasks in [Genesis](https://github.com/Genesis-Embodied-AI/Genesis).
 - [Citation](#citation)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
-
-## Results
-
-**Force2Act-Bench**, success rate (%) over all 305 trials:
-
-| Method | Uses force | Block pivoting | Press-push box | Bottle wiping | Round plug | USB | Average |
-|---|:---:|---:|---:|---:|---:|---:|---:|
-| MolmoAct2 | | 0.0 | 56.7 | 16.0 | 76.0 | 40.0 | 23.9 |
-| ManiFlow | | 0.0 | 66.7 | 0.0 | 86.0 | 76.0 | 26.9 |
-| ForceVLA | ✓ | 0.0 | 33.3 | 4.0 | 88.0 | **96.0** | 26.2 |
-| RDP | ✓ | 0.0 | 0.0 | 0.0 | 86.0 | 0.0 | 14.1 |
-| ImplicitRDP | ✓ | 0.0 | 0.0 | 2.0 | 52.0 | 0.0 | 8.9 |
-| ACP | ✓ | 64.0 | 50.0 | **100.0** | **100.0** | **96.0** | 77.0 |
-| **Force2Act** | ✓ | **93.3** | **100.0** | 98.0 | 96.0 | 76.0 | **93.8** |
-
-**Real robot** (Flexiv Enlight L arm, 20 trials per condition). Demonstrations use a 0.116 kg block and a flat
-table; the 0.418 kg block and the 10° incline are never demonstrated.
-
-| Task | Condition | Force2Act | ACP | ForceVLA | ManiFlow |
-|---|---|:---:|:---:|:---:|:---:|
-| Block pivoting | 0.116 kg block | **19/20** | 18/20 | 0/20 | 3/20 |
-| Block pivoting | 0.418 kg block (unseen) | **20/20** | 3/20 | 0/20 | 0/20 |
-| Press-push box | flat table | **18/20** | 0/20 | 14/20 | 10/20 |
-| Press-push box | 10° incline (unseen) | **20/20** | 1/20 | 0/20 | 17/20<sup>†</sup> |
-| Press-push T | demonstrated setup | **20/20** | 8/20 | 0/20 | 3/20 |
-| Plug insertion | demonstrated setup | **16/20** | 2/20 | 13/20 | 0/20 |
-| **Average** | | **94.2%** | 26.7% | 22.5% | 27.5% |
-
-<sup>†</sup> ManiFlow succeeds on the incline only by pressing about 3.8× harder than in the demonstrations.
-
-Rollout videos of every task are on the [project page](https://magiclab-nus.github.io/Force2Act/).
 
 ## Installation
 
