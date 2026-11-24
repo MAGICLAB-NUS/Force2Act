@@ -158,10 +158,14 @@ command = agent.act(position, quaternion_wxyz, wrench_world, image)   # at 15 Hz
 If you find Force2Act or Force2Act-Bench useful in your research, please cite:
 
 ```bibtex
-@misc{murugan2026force2act,
-  title  = {Force2Act: A Force-Aware Visuomotor Policy for Generalizable Compliant Robot Manipulation},
-  author = {Murugan, Keerthi Vasan and Zhao, Fangguo and Duan, Jiafei},
-  year   = {2026}
+@misc{murugan2026force2actforceawarevisuomotorpolicy,
+      title={Force2Act: A Force-Aware Visuomotor Policy for Generalizable Compliant Robot Manipulation},
+      author={Keerthi Vasan Murugan and Fangguo Zhao and Jiafei Duan},
+      year={2026},
+      eprint={2611.29208},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2611.29208},
 }
 ```
 
