@@ -8,9 +8,7 @@ Fangguo Zhao<sup>1,2</sup>,
 
 <sup>1</sup>National University of Singapore &nbsp; <sup>2</sup>Zhejiang University &nbsp; <sup>*</sup>Corresponding author
 
-[Paper](https://magiclab-nus.github.io/Force2Act/Force2Act.pdf) · [Project Page](https://magiclab-nus.github.io/Force2Act/) · [Models](https://huggingface.co/NUSMAGIC/Force2Act-Sim) · [Dataset](https://huggingface.co/datasets/NUSMAGIC/Force2Act-Bench-Data) · [BibTeX](#citation)
-
-<!-- TODO: point the Paper link to arXiv once it is announced: https://arxiv.org/abs/XXXX.XXXXX -->
+[Paper](https://arxiv.org/abs/2611.29208) · [Project Page](https://magiclab-nus.github.io/Force2Act/) · [Models](https://huggingface.co/NUSMAGIC/Force2Act-Sim) · [Dataset](https://huggingface.co/datasets/NUSMAGIC/Force2Act-Bench-Data) · [BibTeX](#citation)
 
 <img src="assets/teaser.jpg" width="95%" alt="Force2Act plans motion and target force with a global force policy and keeps the contact stable with force experts">
 
